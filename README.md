@@ -1,4 +1,4 @@
-# 🎨 TFM Grupo Rojo - Frontend (React + Vite)
+# 🎨 TFM Grupo Rojo - Fullstack App - Frontend
 
 Interfaz de usuario para la aplicación web desarrollada como parte del proyecto TFM. Este frontend está construido con React y Vite, y se conecta al backend en Node.js + Express + MongoDB.
 
