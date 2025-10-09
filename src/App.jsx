@@ -1,8 +1,13 @@
+import { Navbar } from "./components/Navbar.jsx";
+import { Hero } from "./components/Hero.jsx";
+import { Footer } from "./components/Footer.jsx";
 function App() {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <h1 className="text-3xl font-bold">LOL Match</h1>
-    </div>
+    <>
+      <Navbar />
+      <Hero />
+      <Footer />
+    </>
   );
 }
 
