@@ -1,12 +1,10 @@
-import { Navbar } from "./components/Navbar.jsx";
-import { Hero } from "./components/Hero.jsx";
-import { Footer } from "./components/Footer.jsx";
+import { Button } from "./components/ui/button";
 function App() {
   return (
     <>
-      <Navbar />
-      <Hero />
-      <Footer />
+      <Button variant="default" size="lg">
+        Button
+      </Button>
     </>
   );
 }
