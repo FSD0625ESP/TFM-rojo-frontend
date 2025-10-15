@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import { forgotPassword } from "../services/authService.js";
 
 export function ForgotPasswordForm({
   className,
@@ -24,8 +25,9 @@ export function ForgotPasswordForm({
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !email.includes("@")) {
@@ -34,12 +36,26 @@ export function ForgotPasswordForm({
     }
 
     setError("");
-    setSubmitted(true);
+    setLoading(true);
 
-    // Simulación de envío
-    setTimeout(() => {
-      console.log("Recovery email sent to:", email);
-    }, 1000);
+    try {
+      await forgotPassword({ email });
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Error sending recovery email:", err);
+      
+      // Extraer el código de estado del error si está disponible
+      const errorMessage = err.message || "Error sending recovery email. Please try again.";
+      
+      // Si es un error de usuario no encontrado (404), mostrar mensaje genérico por seguridad
+      if (errorMessage.includes("404") || errorMessage.includes("User not found")) {
+        setError("If an account exists with this email, a recovery link has been sent.");
+      } else {
+        setError("Error sending recovery email. Please check your email and try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,8 +91,8 @@ export function ForgotPasswordForm({
                   )}
                 </Field>
                 <Field>
-                  <Button type="submit" className="w-full">
-                    Send recovery link
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? "Sending..." : "Send recovery link"}
                   </Button>
                 </Field>
               </FieldGroup>
