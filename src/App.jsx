@@ -1,23 +1,31 @@
 import { useState, useEffect } from "react";
+import { Toaster } from "./components/ui/sonner";
 import { SplashScreen } from "./pages/SplashScreen.jsx";
 import { MainRoutes } from "./routes/mainRoutes.jsx";
 
 function App() {
-  const [loading, setLoading] = useState(() => {
-    return sessionStorage.getItem("splashShown") !== "true";
+  const [splashLoader, setSplashLoader] = useState(() => {
+    return sessionStorage.getItem("splashShown") !== "open";
   });
 
   useEffect(() => {
-    if (loading) {
+    if (splashLoader) {
       const timer = setTimeout(() => {
-        sessionStorage.setItem("splashShown", "true");
-        setLoading(false);
+        sessionStorage.setItem("splashShown", "open");
+        setSplashLoader(false);
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [loading]);
+  }, [splashLoader]);
 
-  return loading ? <SplashScreen /> : <MainRoutes />;
+  return (
+    <>
+      {/* si ya se ha mostrado, no vuelve a mostrarlo si recagamos */}
+      {splashLoader ? <SplashScreen /> : <MainRoutes />}
+      {/* este componente permite mostrar los toasts */}
+      <Toaster />
+    </>
+  );
 }
 
 export default App;
