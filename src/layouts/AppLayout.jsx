@@ -5,8 +5,8 @@ import {
   SidebarProvider,
   SidebarFooter,
 } from "../components/ui/sidebar";
-import { Footer } from "../components/footer";
-import { Header } from "../components/header";
+import { Footer } from "../components/Footer";
+import { Header } from "../components/Header";
 
 export function AppLayout() {
   return (
