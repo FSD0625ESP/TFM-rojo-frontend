@@ -1,8 +1,30 @@
+import { useState, useEffect } from "react";
+import { Toaster } from "./components/ui/sonner";
+import { SplashScreen } from "./pages/SplashScreen.jsx";
+import { MainRoutes } from "./routes/mainRoutes.jsx";
+
 function App() {
+  const [splashLoader, setSplashLoader] = useState(() => {
+    return sessionStorage.getItem("splashShown") !== "open";
+  });
+
+  useEffect(() => {
+    if (splashLoader) {
+      const timer = setTimeout(() => {
+        sessionStorage.setItem("splashShown", "open");
+        setSplashLoader(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [splashLoader]);
+
   return (
-    <div className="flex justify-center items-center h-screen">
-      <h1 className="text-3xl font-bold">LOL Match</h1>
-    </div>
+    <>
+      {/* si ya se ha mostrado, no vuelve a mostrarlo si recagamos */}
+      {splashLoader ? <SplashScreen /> : <MainRoutes />}
+      {/* este componente permite mostrar los toasts */}
+      <Toaster />
+    </>
   );
 }
 
