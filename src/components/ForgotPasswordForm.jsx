@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,11 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-} from "../components/ui/field";
+import { Field, FieldDescription, FieldGroup } from "../components/ui/field";
 import {
   Form,
   FormField,
@@ -38,6 +34,8 @@ export function ForgotPasswordForm({ className, ...props }) {
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const [countdown, setCountdown] = useState(10); //cuenta regresiva en segundos
 
   //inicializamos el formulario vacío
   const form = useForm({
@@ -59,14 +57,36 @@ export function ForgotPasswordForm({ className, ...props }) {
       const message = err.message || "";
 
       if (message.includes("404") || message.includes("User not found")) {
-        setServerError("If an account exists with this email, a recovery link has been sent.");
+        setServerError(
+          "If an account exists with this email, a recovery link has been sent."
+        );
       } else {
-        setServerError("Error sending recovery email. Please check your email and try again.");
+        setServerError(
+          "Error sending recovery email. Please check your email and try again."
+        );
       }
     } finally {
       setLoading(false);
     }
   };
+
+  //redirigir automáticamente después de enviar el correo
+  useEffect(() => {
+    if (submitted) {
+      const interval = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+
+      const timeout = setTimeout(() => {
+        navigate("/start/statistics");
+      }, countdown * 1000);
+
+      return () => {
+        clearInterval(interval);
+        clearTimeout(timeout);
+      };
+    }
+  }, [submitted, countdown, navigate]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -79,9 +99,13 @@ export function ForgotPasswordForm({ className, ...props }) {
         </CardHeader>
         <CardContent>
           {submitted ? (
+            // se agrega una cuenta regresiva para reactir automáticamente
             <FieldDescription className="text-center text-green-600">
-              If an account exists for <strong>{form.getValues("email")}</strong>, you’ll receive
-              a recovery link shortly.
+              If an account exists for{" "}
+              <strong>{form.getValues("email")}</strong>, you’ll receive a
+              recovery link shortly.
+              <br />
+              Redirecting in <strong>{countdown}</strong> seconds...
             </FieldDescription>
           ) : (
             <Form {...form}>
@@ -102,7 +126,9 @@ export function ForgotPasswordForm({ className, ...props }) {
                         </FormControl>
                         <FormMessage />
                         {serverError && (
-                          <p className="text-sm text-red-500 mt-1">{serverError}</p>
+                          <p className="text-sm text-red-500 mt-1">
+                            {serverError}
+                          </p>
                         )}
                       </FormItem>
                     )}

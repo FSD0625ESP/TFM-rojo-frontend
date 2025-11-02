@@ -8,18 +8,19 @@ import { Signup } from "../pages/Signup";
 import { ForgotPassword } from "../pages/ForgotPassword";
 import { ResetPassword } from "../pages/ResetPassword";
 
-import { Start } from "../pages/Start";
+import { StartNav } from "../components/StartNav";
 import { Statistics } from "../pages/Statistics";
 import { Teams } from "../pages/Teams";
 import { Matchs } from "../pages/Matchs";
 import { Chats } from "../pages/Chats";
 
-import { Profile } from "../pages/Profile";
+import { ProfileNav } from "../components/ProfileNav";
 import { MyProfile } from "../pages/MyProfile";
 import { MyTeam } from "../pages/MyTeam";
 import { MyStats } from "../pages/MyStats";
 import { MySettings } from "../pages/MySettings";
 
+//definición de rutas principales de la aplicación
 export function MainRoutes() {
   return (
     <Routes>
@@ -37,7 +38,7 @@ export function MainRoutes() {
       {/* Rutas privadas con AppLayout */}
       <Route path="/" element={<AppLayout />}>
         {/* Start */}
-        <Route path="start" element={<Start />}>
+        <Route path="start" element={<StartNav />}>
           {/* Redirección desde /start a /start/statistics */}
           <Route index element={<Navigate to="statistics" replace />} />
 
@@ -73,7 +74,7 @@ export function MainRoutes() {
           path="profile"
           element={
             <PrivateRoute>
-              <Profile />
+              <ProfileNav />
             </PrivateRoute>
           }
         >

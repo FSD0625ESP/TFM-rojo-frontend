@@ -18,10 +18,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Loader2 } from "lucide-react";
-import { QUEUE_OPTIONS, TIER_OPTIONS, DIVISION_OPTIONS } from '../constants/filters'
+import {
+  QUEUE_OPTIONS,
+  TIER_OPTIONS,
+  DIVISION_OPTIONS,
+} from "../constants/filters";
 
 // Asumiendo que el backend monta la ruta League en /api/riot/league
-const API_BASE_URL = "http://localhost:5000/api/lol/league";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 //listar y filtrar jugadores
 export function LeagueLeaderboard() {
@@ -39,8 +43,8 @@ export function LeagueLeaderboard() {
 
     // La URL final en el backend deberá ser algo como:
     // /api/riot/league/RANKED_SOLO_5x5/DIAMOND/I
-    const url = `${API_BASE_URL}/${queue}/${tier}/${division}`;
-
+    const url = `${API_BASE_URL}/lol/league/${queue}/${tier}/${division}`;
+    console.log("Fetching leaderboard from URL:", url);
     try {
       const response = await axios.get(url);
       // El endpoint de Riot devuelve un array de objetos

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Progress } from "../components/ui/progress";
 import { useAuth } from "../context/AuthContext";
 
+//página de pantalla de carga inicial
 export function SplashScreen() {
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();

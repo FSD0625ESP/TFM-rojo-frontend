@@ -1,12 +1,8 @@
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { LeagueLeaderboard } from "../components/LeagueLeaderboard";
 import { SummonerSearch } from "../components/SummonerSearch";
 
+//página de estadísticas y acceso público (punto de entrada de la app)
 export function Statistics() {
   return (
     <Tabs defaultValue="search" className="w-full max-w-5xl mx-auto px-4 py-6">
@@ -25,4 +21,3 @@ export function Statistics() {
     </Tabs>
   );
 }
-
