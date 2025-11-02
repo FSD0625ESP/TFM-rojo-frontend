@@ -22,17 +22,17 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-} from "../components/ui/field";
+import { Field, FieldDescription, FieldGroup } from "../components/ui/field";
 
 //esquema de validación con zod
 const resetSchema = z
   .object({
-    password: z.string().min(6, { message: "Password must be at least 6 characters." }),
-    confirmPassword: z.string().min(6, { message: "Password must be at least 6 characters." }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters." }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters." }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match.",
@@ -57,7 +57,9 @@ export function ResetPasswordForm({ className, ...props }) {
 
   useEffect(() => {
     if (!token) {
-      setServerError("Invalid or missing reset token. Please request a new password reset.");
+      setServerError(
+        "Invalid or missing reset token. Please request a new password reset."
+      );
     }
   }, [token]);
 
@@ -103,7 +105,8 @@ export function ResetPasswordForm({ className, ...props }) {
             </FieldDescription>
           ) : !token ? (
             <FieldDescription className="text-center text-red-600">
-              Invalid or missing reset token. Please request a new password reset.
+              Invalid or missing reset token. Please request a new password
+              reset.
               <br />
               <Link
                 to="/forgot-password"
@@ -123,7 +126,11 @@ export function ResetPasswordForm({ className, ...props }) {
                       <FormItem>
                         <FormLabel>New Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
+                          <Input
+                            type="password"
+                            placeholder="••••••••"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -136,7 +143,11 @@ export function ResetPasswordForm({ className, ...props }) {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
+                          <Input
+                            type="password"
+                            placeholder="••••••••"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

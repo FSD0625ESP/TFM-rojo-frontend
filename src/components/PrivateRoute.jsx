@@ -14,6 +14,17 @@ export function PrivateRoute({ children }) {
   //esto sirve para que no espere los 5 seg para redireccionar
   const redirectTimer = useRef(null);
 
+  //rutas públicas que no deben activar el modal ni redirigir
+  const publicPaths = [
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+  ];
+  const isPublicRoute = publicPaths.some((path) =>
+    location.pathname.startsWith(path)
+  );
+
   //función para limpiar el timeout de redirección
   const clearRedirect = useCallback(() => {
     if (redirectTimer.current) {
@@ -23,15 +34,19 @@ export function PrivateRoute({ children }) {
   }, []);
 
   //función para redirigir a una ruta específica y cerrar el modal
-  const redirectTo = useCallback((path) => {
-    clearRedirect();
-    setShowModal(false);
-    navigate(path, { replace: true });
-  }, [navigate, clearRedirect]);
+  const redirectTo = useCallback(
+    (path) => {
+      clearRedirect();
+      setShowModal(false);
+      navigate(path, { replace: true });
+    },
+    [navigate, clearRedirect]
+  );
 
   //efecto que se ejecuta cuando cambia el estado de autenticación
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
+    //🔧 NUEVO: evita redirección si estás en una ruta pública
+    if (!loading && !isAuthenticated && !isPublicRoute) {
       setShowModal(true);
       redirectTimer.current = setTimeout(() => {
         redirectTo("/start/statistics");
@@ -40,7 +55,7 @@ export function PrivateRoute({ children }) {
 
     //limpiar el timeout si el componente se desmonta
     return () => clearRedirect();
-  }, [loading, isAuthenticated, redirectTo, clearRedirect]);
+  }, [loading, isAuthenticated, isPublicRoute, redirectTo, clearRedirect]);
 
   //función para cerrar el modal y redirigir al área pública
   const handleClose = () => redirectTo("/start/statistics");
@@ -59,7 +74,7 @@ export function PrivateRoute({ children }) {
   }
 
   //autenticado, renderizar children, sino mostrar modal
-  return isAuthenticated ? (
+  return isAuthenticated || isPublicRoute ? (
     children
   ) : (
     <AlertModal

@@ -30,17 +30,21 @@ export function AppSidebar(props) {
     setExpanded((prev) => (prev === sectionTitle ? null : sectionTitle));
   };
 
-  //cierra sesión y redirige a ruta pública
-  const handleClick = async () => {
-    await handleLogout({ logout, navigate, redirectTo: "/start/statistics" });
+  // acción condicional según estado de sesión
+  const handleSessionClick = async () => {
+    if (isAuthenticated) {
+      await handleLogout({ logout, navigate, redirectTo: "/start/statistics" });
+    } else {
+      navigate("/login");
+    }
   };
 
-  const sessionIcon = isAuthenticated
-    ? <LogOut className="size-4" />
-    : <LogIn className="size-4" />;
-  const sessionLabel = isAuthenticated
-    ? "Logout"
-    : "Login";
+  const sessionIcon = isAuthenticated ? (
+    <LogOut className="size-4" />
+  ) : (
+    <LogIn className="size-4" />
+  );
+  const sessionLabel = isAuthenticated ? "Logout" : "Login";
   const navMain = NAV_MAIN;
 
   return (
@@ -87,7 +91,7 @@ export function AppSidebar(props) {
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
-              onClick={handleClick}
+              onClick={handleSessionClick}
               className="flex justify-start items-center gap-2 cursor-pointer"
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">

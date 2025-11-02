@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx";
-import { registerUser } from "../services/authService.js";
+import { useAuth } from "../context/AuthContext";
+import { registerUser } from "../services/authService";
 import { cn } from "../lib/utils";
 import {
   Form,
@@ -130,7 +130,11 @@ export function SignupForm({ className, ...props }) {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
+                          <Input
+                            type="password"
+                            placeholder="••••••••"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -143,14 +147,20 @@ export function SignupForm({ className, ...props }) {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
+                          <Input
+                            type="password"
+                            placeholder="••••••••"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </Field>
-                <FieldDescription>Must be at least 8 characters long.</FieldDescription>
+                <FieldDescription>
+                  Must be at least 8 characters long.
+                </FieldDescription>
 
                 <Field>
                   <Button type="submit">Create Account</Button>
