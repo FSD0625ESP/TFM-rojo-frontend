@@ -1,15 +1,17 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { NAV_MAIN } from "../constants/navigation";
 
 export function ProfileNav() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const buttons = [
-    { label: "My Profile", key: "my-profile" },
-    { label: "My Team", key: "my-team" },
-    { label: "My Stats", key: "my-stats" },
-    { label: "Settings", key: "my-settings" },
-  ];
+  //extraer los items de la sección "Start" desde NAV_MAIN
+  const startSection = NAV_MAIN.find((section) => section.title === "Profile");
+  const buttons =
+    startSection?.items.map(({ title, url }) => {
+      const key = url.split("/")[2]; //extrae el segmento clave de la URL
+      return { label: title, key };
+    }) || [];
 
   // Detectar ruta activa desde la URL
   const activeComponent = location.pathname.split("/")[2] || "my-profile";
