@@ -10,13 +10,13 @@ import { ResetPassword } from "../pages/ResetPassword";
 
 import { StartNav } from "../components/StartNav";
 import { Statistics } from "../pages/Statistics";
-import { Teams } from "../pages/Teams";
-import { Matchs } from "../pages/Matchs";
-import { Chats } from "../pages/Chats";
+import { Squads } from "../pages/Squads";
+import { Matches } from "../pages/Matches";
+import { Community } from "../pages/Community";
 
 import { ProfileNav } from "../components/ProfileNav";
 import { MyProfile } from "../pages/MyProfile";
-import { MyTeam } from "../pages/MyTeam";
+import { MySquad } from "../pages/MySquad";
 import { MyStats } from "../pages/MyStats";
 import { MySettings } from "../pages/MySettings";
 
@@ -44,26 +44,26 @@ export function MainRoutes() {
 
           <Route path="statistics" element={<Statistics />} />
           <Route
-            path="teams"
+            path="squads"
             element={
               <PrivateRoute>
-                <Teams />
+                <Squads />
               </PrivateRoute>
             }
           />
           <Route
-            path="matchs"
+            path="matches"
             element={
               <PrivateRoute>
-                <Matchs />
+                <Matches />
               </PrivateRoute>
             }
           />
           <Route
-            path="chats"
+            path="community"
             element={
               <PrivateRoute>
-                <Chats />
+                <Community />
               </PrivateRoute>
             }
           />
@@ -90,10 +90,10 @@ export function MainRoutes() {
             }
           />
           <Route
-            path="my-team"
+            path="my-squad"
             element={
               <PrivateRoute>
-                <MyTeam />
+                <MySquad />
               </PrivateRoute>
             }
           />

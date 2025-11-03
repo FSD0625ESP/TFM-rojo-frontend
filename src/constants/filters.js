@@ -5,7 +5,7 @@ export const QUEUE_OPTIONS = [
 ];
 
 //rangos de clasificación
-export const TIER_OPTIONS = [
+export const RANKS_OPTIONS = [
   { value: "CHALLENGER", label: "Challenger" },
   { value: "GRANDMASTER", label: "Gran Maestro" },
   { value: "MASTER", label: "Maestro" },
@@ -18,8 +18,8 @@ export const TIER_OPTIONS = [
   { value: "IRON", label: "Hierro" },
 ];
 
-//divisiones dentro de cada tier
-export const DIVISION_OPTIONS = [
+//divisiones dentro de cada rank
+export const TIERS_OPTIONS = [
   { value: "I", label: "I (Uno)" },
   { value: "II", label: "II (Dos)" },
   { value: "III", label: "III (Tres)" },
@@ -28,6 +28,7 @@ export const DIVISION_OPTIONS = [
 
 //roles de juego
 export const ROLE_OPTIONS = [
+  { value: "ALL", label: "All" },
   { value: "TOP", label: "Top" },
   { value: "JUNGLE", label: "Jungla" },
   { value: "MID", label: "Mid" },
@@ -37,6 +38,7 @@ export const ROLE_OPTIONS = [
 
 //regiones/servidores
 export const REGION_OPTIONS = [
+  { value: "Global", label: "Global" },
   { value: "EUW", label: "Europa Oeste (EUW)" },
   { value: "EUNE", label: "Europa Este/Nórdica (EUNE)" },
   { value: "NA", label: "Norteamérica (NA)" },
@@ -48,4 +50,10 @@ export const REGION_OPTIONS = [
   { value: "BR", label: "Brasil (BR)" },
   { value: "TR", label: "Turquía (TR)" },
   { value: "RU", label: "Rusia (RU)" },
+];
+
+//versiones de patch
+export const PATCH_OPTIONS = [
+  { value: "15.20", label: "15.20" },
+  { value: "15.21", label: "15.21" },
 ];

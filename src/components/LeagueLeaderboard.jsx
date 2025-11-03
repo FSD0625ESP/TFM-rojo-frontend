@@ -20,8 +20,8 @@ import {
 import { Loader2 } from "lucide-react";
 import {
   QUEUE_OPTIONS,
-  TIER_OPTIONS,
-  DIVISION_OPTIONS,
+  RANKS_OPTIONS,
+  TIERS_OPTIONS,
 } from "../constants/filters";
 
 // Asumiendo que el backend monta la ruta League en /api/riot/league
@@ -30,8 +30,8 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 //listar y filtrar jugadores
 export function LeagueLeaderboard() {
   const [queue, setQueue] = useState(QUEUE_OPTIONS[0].value);
-  const [tier, setTier] = useState(TIER_OPTIONS[3].value); // Diamante por defecto
-  const [division, setDivision] = useState(DIVISION_OPTIONS[0].value); // I por defecto
+  const [tier, setTier] = useState(RANKS_OPTIONS[4].value); // Esmeralda por defecto
+  const [division, setDivision] = useState(TIERS_OPTIONS[0].value); // I por defecto
   const [players, setPlayers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -72,7 +72,7 @@ export function LeagueLeaderboard() {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
+    <div className="container py-4">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Players Statistics</CardTitle>
@@ -110,7 +110,7 @@ export function LeagueLeaderboard() {
                   <SelectValue placeholder="Nivel" />
                 </SelectTrigger>
                 <SelectContent>
-                  {TIER_OPTIONS.map((opt) => (
+                  {RANKS_OPTIONS.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
                       {opt.label}
                     </SelectItem>
@@ -136,7 +136,7 @@ export function LeagueLeaderboard() {
                       <SelectValue placeholder="División" />
                     </SelectTrigger>
                     <SelectContent>
-                      {DIVISION_OPTIONS.map((opt) => (
+                      {TIERS_OPTIONS.map((opt) => (
                         <SelectItem key={opt.value} value={opt.value}>
                           {opt.label}
                         </SelectItem>
