@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { resetPassword } from "../services/authService";
@@ -23,21 +22,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Field, FieldDescription, FieldGroup } from "../components/ui/field";
-
-//esquema de validación con zod
-const resetSchema = z
-  .object({
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters." }),
-    confirmPassword: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters." }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match.",
-    path: ["confirmPassword"],
-  });
+import { resetPasswordSchema } from "../schemas/userSchemas";
 
 export function ResetPasswordForm({ className, ...props }) {
   const [searchParams] = useSearchParams();
@@ -48,9 +33,10 @@ export function ResetPasswordForm({ className, ...props }) {
   const [loading, setLoading] = useState(false);
 
   const form = useForm({
-    resolver: zodResolver(resetSchema),
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      password: "",
+      token: token || "",
+      newPassword: "",
       confirmPassword: "",
     },
   });
@@ -74,8 +60,8 @@ export function ResetPasswordForm({ className, ...props }) {
 
     try {
       await resetPassword({
-        token,
-        newPassword: values.password,
+        token: values.token,
+        newPassword: values.newPassword,
         confirmPassword: values.confirmPassword,
       });
       setSubmitted(true);
@@ -121,7 +107,7 @@ export function ResetPasswordForm({ className, ...props }) {
                 <FieldGroup>
                   <FormField
                     control={form.control}
-                    name="password"
+                    name="newPassword"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>New Password</FormLabel>

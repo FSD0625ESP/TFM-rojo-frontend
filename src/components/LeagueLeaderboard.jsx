@@ -24,7 +24,7 @@ import {
   TIERS_OPTIONS,
 } from "../constants/filters";
 
-// Asumiendo que el backend monta la ruta League en /api/riot/league
+//backend monta la ruta League en /api/riot/league
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 //listar y filtrar jugadores
@@ -41,13 +41,13 @@ export function LeagueLeaderboard() {
     setError(null);
     setPlayers([]);
 
-    // La URL final en el backend deberá ser algo como:
+    //la URL final en el backend deberá ser algo como:
     // /api/riot/league/RANKED_SOLO_5x5/DIAMOND/I
     const url = `${API_BASE_URL}/lol/league/${queue}/${tier}/${division}`;
-    console.log("Fetching leaderboard from URL:", url);
+    //console.log("Fetching leaderboard from URL:", url);
     try {
       const response = await axios.get(url);
-      // El endpoint de Riot devuelve un array de objetos
+      //el endpoint de Riot devuelve un array de objetos
       setPlayers(response.data);
     } catch (err) {
       console.error("Error fetching leaderboard:", err);
@@ -60,23 +60,20 @@ export function LeagueLeaderboard() {
     }
   }, [queue, tier, division]);
 
-  // Cargar datos al montar el componente o al cambiar filtros
+  //cargar datos al montar el componente o al cambiar filtros
   useEffect(() => {
     fetchLeaderboard();
   }, [fetchLeaderboard]);
 
-  // Función para calcular el ratio de victorias
+  //función para calcular el ratio de victorias
   const calculateWinRatio = (wins, losses) => {
     const total = wins + losses;
     return total === 0 ? "0%" : `${((wins / total) * 100).toFixed(1)}%`;
   };
 
   return (
-    <div className="container py-4">
+    <div className="container py-2 md:py-4">
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Players Statistics</CardTitle>
-        </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2 mb-6 items-end">
             {/* 1. Tipo de Cola */}
@@ -220,7 +217,7 @@ export function LeagueLeaderboard() {
 
           {!isLoading && players.length === 0 && !error && (
             <p className="text-sm text-center text-muted-foreground mt-8">
-              No se encontraron jugadores en la liga y división seleccionada.
+              No players found in the league and division selected.
             </p>
           )}
         </CardContent>

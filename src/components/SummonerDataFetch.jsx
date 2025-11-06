@@ -9,20 +9,24 @@ import {
   CardContent,
 } from "../components/ui/card";
 import { Loader2 } from "lucide-react";
+import { AlertModal } from "./AlertModal";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-//función para realizar la petición al backend desde SummonerSerach
+//función para realizar la petición al backend desde SummonerSearch
 export function SummonerDataFetcher() {
   const [gameName, setGameName] = useState("");
   const [tagLine, setTagLine] = useState("");
   const [summonerData, setSummonerData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showError, setShowError] = useState(false);
 
   const fetchData = useCallback(async () => {
     if (!gameName || !tagLine) {
-      setError("Por favor, ingresa el Nombre de Juego y la Etiqueta.");
+      const errMsg = "Please enter the Game Name and Tag.";
+      setError(errMsg);
+      setShowError(true);
       return;
     }
 
@@ -46,9 +50,10 @@ export function SummonerDataFetcher() {
       setSummonerData(response.data);
     } catch (err) {
       //4-manejo de errores
-      console.error("Error al buscar invocador:", err);
+      console.error("Error searching summoner:", err);
       const errMsg = err.response?.data?.error || `Error: ${err.message}`;
       setError(errMsg);
+      setShowError(true);
     } finally {
       setIsLoading(false);
     }
@@ -74,7 +79,7 @@ export function SummonerDataFetcher() {
         </CardHeader>
         <CardContent className="space-y-2">
           <p>
-            <strong>Level:</strong> {summonerLevel ?? "Desconocido"}
+            <strong>Level:</strong> {summonerLevel ?? "Unknown"}
           </p>
           {puuid && (
             <p className="text-md text-muted-foreground break-words">
@@ -121,17 +126,30 @@ export function SummonerDataFetcher() {
               Searching...
             </>
           ) : (
-            "Buscar"
+            "Search"
           )}
         </Button>
       </form>
 
-      {/* Mensajes de Error */}
-      {error && (
-        <div className="text-sm mt-4 p-3 rounded-lg text-red-700 bg-red-100 border border-red-300 w-full max-w-md">
-          {error}
-        </div>
-      )}
+      {/* Error Modal */}
+      <AlertModal
+        open={showError}
+        onClose={() => setShowError(false)}
+        title="Summoner not found"
+        message={
+          (error ||
+            "Verify that the Riot ID is correct. Make sure to use the correct region.") +
+          " [Request failed]"
+        }
+        variant="error"
+        actions={[
+          {
+            label: "Close",
+            onClick: () => setShowError(false),
+            variant: "outline",
+          },
+        ]}
+      />
 
       {/* Mostrar Datos */}
       {renderSummonerCard()}

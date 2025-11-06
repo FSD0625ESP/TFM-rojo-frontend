@@ -7,14 +7,16 @@ import { Login } from "../pages/Login";
 import { Signup } from "../pages/Signup";
 import { ForgotPassword } from "../pages/ForgotPassword";
 import { ResetPassword } from "../pages/ResetPassword";
+import { VerifyAccount } from "../pages/VerifyAccount";
 
-import { StartNav } from "../components/StartNav";
+import { NotFound } from "../pages/NotFound";
+import { SectionNav } from "../components/SectionNav";
+
 import { Statistics } from "../pages/Statistics";
 import { Squads } from "../pages/Squads";
 import { Matches } from "../pages/Matches";
 import { Community } from "../pages/Community";
 
-import { ProfileNav } from "../components/ProfileNav";
 import { MyProfile } from "../pages/MyProfile";
 import { MySquad } from "../pages/MySquad";
 import { MyStats } from "../pages/MyStats";
@@ -30,6 +32,7 @@ export function MainRoutes() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-account" element={<VerifyAccount />} />
       </Route>
 
       {/* Redirección desde raíz "/" a "/start/statistics" */}
@@ -38,7 +41,12 @@ export function MainRoutes() {
       {/* Rutas privadas con AppLayout */}
       <Route path="/" element={<AppLayout />}>
         {/* Start */}
-        <Route path="start" element={<StartNav />}>
+        <Route
+          path="start"
+          element={
+            <SectionNav sectionTitle="Start" defaultRoute="statistics" />
+          }
+        >
           {/* Redirección desde /start a /start/statistics */}
           <Route index element={<Navigate to="statistics" replace />} />
 
@@ -67,6 +75,9 @@ export function MainRoutes() {
               </PrivateRoute>
             }
           />
+
+          {/* Página 404 dentro del layout */}
+          <Route path="*" element={<NotFound />} />
         </Route>
 
         {/* Profile y sus subrutas */}
@@ -74,7 +85,7 @@ export function MainRoutes() {
           path="profile"
           element={
             <PrivateRoute>
-              <ProfileNav />
+              <SectionNav sectionTitle="Profile" defaultRoute="my-profile" />
             </PrivateRoute>
           }
         >

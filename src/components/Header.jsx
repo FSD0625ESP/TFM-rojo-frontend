@@ -12,16 +12,19 @@ export function Header() {
   const { user, isAuthenticated, logout } = useAuth();
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+    <header className="sticky top-0 z-50 bg-background flex h-16 shrink-0 items-center gap-2 border-b">
       <div className="flex items-center gap-2 px-3 w-full justify-between">
         <div className="flex items-center gap-2">
           <SidebarTrigger />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <BreadcrumbNav pathSegments={pathSegments} />
         </div>
-        <NavDropdown user={user} isAuthenticated={isAuthenticated} logout={logout} />
+        <NavDropdown
+          user={user}
+          isAuthenticated={isAuthenticated}
+          logout={logout}
+        />
       </div>
     </header>
   );
 }
-
