@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { toast } from "sonner";
@@ -28,12 +27,7 @@ import {
   FieldGroup,
   FieldSeparator,
 } from "../components/ui/field";
-
-//schema de validaciones de zod
-const loginSchema = z.object({
-  email: z.string().email({ message: "Email inválido" }),
-  password: z.string().min(8, { message: "Mínimo 8 caracteres" }),
-});
+import { loginSchema } from "../schemas/userSchemas";
 
 //formulario de login para la page de login
 export function LoginForm({ className, ...props }) {
@@ -56,9 +50,9 @@ export function LoginForm({ className, ...props }) {
     const result = await login(values);
     if (result.success) {
       navigate(from, { replace: true });
-      toast.success("Inicio de sesión exitoso ✅");
+      toast.success("Login successful ✅");
     } else {
-      toast.error("Error al iniciar sesión ❌ " + result.message);
+      toast.error("Error logging in ❌ " + result.message);
     }
   };
 

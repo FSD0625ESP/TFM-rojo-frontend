@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "../components/ui/progress";
 import { useAuth } from "../context/AuthContext";
+import { IMG_DEFAULT } from "../constants/images";
 
 //página de pantalla de carga inicial
 export function SplashScreen() {
@@ -27,8 +28,8 @@ export function SplashScreen() {
       <div className="flex flex-col items-center justify-center flex-grow">
         <div className="mb-12">
           <img
-            src="/logo.png"
-            alt="Logo LOL Match"
+            src={IMG_DEFAULT.logo.src}
+            alt={IMG_DEFAULT.logo.alt}
             className="h-54 animate-fade-in animate-duration-[3000ms] drop-shadow-[0_0_8px_#c8aa6e]"
           />
         </div>

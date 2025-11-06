@@ -1,8 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useNavigate, useLocation, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../services/authService";
 import { cn } from "../lib/utils";
 import {
@@ -22,39 +20,19 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldSeparator,
-} from "../components/ui/field";
+import { Field, FieldDescription, FieldGroup } from "../components/ui/field";
 import { toast } from "sonner";
-
-//schema de validación con zod
-const signupSchema = z
-  .object({
-    fullName: z.string().min(2, { message: "Nombre requerido" }),
-    email: z.string().email({ message: "Email inválido" }),
-    password: z.string().min(8, { message: "Mínimo 8 caracteres" }),
-    confirmPassword: z.string().min(8, { message: "Mínimo 8 caracteres" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Las contraseñas no coinciden",
-    path: ["confirmPassword"],
-  });
+import { registerSchema } from "../schemas/userSchemas";
 
 //formulario de registro para la page Signup
 export function SignupForm({ className, ...props }) {
-  const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
 
   //iniciamos el formualario vacío
   const form = useForm({
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
-      fullName: "",
+      userName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -65,19 +43,14 @@ export function SignupForm({ className, ...props }) {
   const onSubmit = async (values) => {
     try {
       await registerUser(values);
-      const loginResult = await login({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (loginResult.success) {
-        navigate(from, { replace: true });
-        toast.success("Cuenta creada y sesión iniciada ✅");
-      } else {
-        toast.error("Cuenta creada pero error al iniciar sesión ❌");
-      }
+      toast.success(
+        "Account created successfully. Check your email to activate your account ✅"
+      );
+      navigate("/login");
     } catch (err) {
-      toast.error("Error al registrar ❌ " + err.message);
+      toast.error(
+        "Error registering user. Please try again. ❌ " + err.message
+      );
     }
   };
 
@@ -96,12 +69,12 @@ export function SignupForm({ className, ...props }) {
               <FieldGroup>
                 <FormField
                   control={form.control}
-                  name="fullName"
+                  name="userName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
+                      <FormLabel>User Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Lionel Messi" {...field} />
+                        <Input placeholder="Summoner Name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -115,7 +88,10 @@ export function SignupForm({ className, ...props }) {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="lionelmessi@mail.com" {...field} />
+                        <Input
+                          placeholder="summoner@lolmatch.online"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

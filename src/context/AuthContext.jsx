@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 import Cookies from "js-cookie";
 import { useSessionCheck } from "../hooks/useSessionCheck";
 import { loginUser, logoutUser } from "../services/authService";
+import { IMG_DEFAULT } from "../constants/images";
 
 //crear el contexto de autenticación
 const AuthContext = createContext();
@@ -10,6 +11,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 //provider para envolver todo en main.jsx
 export function AuthProvider({ children }) {
   const { user, isAuthenticated, loading, dispatch } = useSessionCheck(API_URL);
+  console.log(user); // <--- ver el objeto user que recibimos
+
   //función para iniciar sesión
   const login = async (credentials) => {
     try {

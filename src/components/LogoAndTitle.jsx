@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { IMG_DEFAULT } from "../constants/images";
 
 //usado en formularios de login, register, forgot password, reset password
 export function LogoAndTitle() {
@@ -10,8 +11,8 @@ export function LogoAndTitle() {
     >
       <div className="flex items-center justify-center">
         <img
-          src="./logo.png"
-          alt="Logo LOL Match"
+          src={IMG_DEFAULT.logo.src}
+          alt={IMG_DEFAULT.logo.alt}
           className="h-16 transition-transform duration-300 group-hover:scale-105"
         />
       </div>

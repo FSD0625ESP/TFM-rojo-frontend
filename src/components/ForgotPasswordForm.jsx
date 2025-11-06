@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "../lib/utils";
 import { Button } from "../components/ui/button";
@@ -23,11 +22,7 @@ import {
 } from "../components/ui/form";
 import { Input } from "../components/ui/input";
 import { forgotPassword } from "../services/authService";
-
-//esquema de validación con zod
-const forgotPasswordSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
-});
+import { forgotSchema } from "../schemas/userSchemas";
 
 //formulario para recuperar la contraseña
 export function ForgotPasswordForm({ className, ...props }) {
@@ -39,7 +34,7 @@ export function ForgotPasswordForm({ className, ...props }) {
 
   //inicializamos el formulario vacío
   const form = useForm({
-    resolver: zodResolver(forgotPasswordSchema),
+    resolver: zodResolver(forgotSchema),
     defaultValues: {
       email: "",
     },
@@ -58,7 +53,7 @@ export function ForgotPasswordForm({ className, ...props }) {
 
       if (message.includes("404") || message.includes("User not found")) {
         setServerError(
-          "If an account exists with this email, a recovery link has been sent."
+          "We’ve sent a recovery link to the email provided, if it’s associated with an account."
         );
       } else {
         setServerError(
