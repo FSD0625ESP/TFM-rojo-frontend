@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "../components/ui/card";
 import { Loader2 } from "lucide-react";
+import { IMG_DEFAULT } from "../constants/images";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
 //tarjeta para mostrar jugadores en SummonerSearch
-export function SummonerCard({ summonerName, gameName, tagLine }) {
+export function SummonerCard({ summonerName, gameName, tagLine, onError }) {
   const [summoner, setSummoner] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,17 +25,19 @@ export function SummonerCard({ summonerName, gameName, tagLine }) {
       try {
         const query = summonerName
           ? `${API_BASE}/lol/summoner?summonerName=${encodeURIComponent(
-            summonerName
-          )}`
+              summonerName
+            )}`
           : `${API_BASE}/lol/summoner?gameName=${encodeURIComponent(
-            gameName
-          )}&tagLine=${encodeURIComponent(tagLine)}`;
+              gameName
+            )}&tagLine=${encodeURIComponent(tagLine)}`;
 
         const response = await axios.get(query);
 
         if (response.data.error) {
-          setError(response.data.error);
+          const errMsg = response.data.error;
+          setError(errMsg);
           setSummoner(null);
+          if (onError) onError(errMsg);
           return;
         }
 
@@ -39,13 +47,14 @@ export function SummonerCard({ summonerName, gameName, tagLine }) {
         const errMsg =
           err.response?.data?.error || `Error al obtener datos: ${err.message}`;
         setError(errMsg);
+        if (onError) onError(errMsg);
       } finally {
         setLoading(false);
       }
     };
 
     fetchSummoner();
-  }, [summonerName, gameName, tagLine]);
+  }, [summonerName, gameName, tagLine, onError]);
 
   if (loading) {
     return (
@@ -60,18 +69,8 @@ export function SummonerCard({ summonerName, gameName, tagLine }) {
     );
   }
 
-  if (error) {
-    return (
-      <Card className="w-full max-w-md mx-auto mt-6 border-red-300">
-        <CardHeader>
-          <CardTitle className="text-xl text-red-600">Error</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-red-500">{error}</p>
-        </CardContent>
-      </Card>
-    );
-  }
+  //no renderizamos errores aquí; el padre mostrará el modal
+  if (error) return null;
 
   return (
     <Card className="w-full max-w-md mx-auto mt-6 bg-gradient-to-br from-[#0a0a0a] to-[#1c1c1c] border-[1.5px] border-yellow-600 shadow-xl rounded-xl text-white p-6">
@@ -80,7 +79,7 @@ export function SummonerCard({ summonerName, gameName, tagLine }) {
           src={summoner.profileIconUrl}
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "/default-profile-icon.png";
+            e.target.src = IMG_DEFAULT.profileIcon.src;
           }}
           alt="Icono de perfil"
           className="w-50 h-50 rounded-full border-4 border-yellow-500 shadow-lg p-4"

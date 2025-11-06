@@ -1,12 +1,23 @@
 import { useEffect, useReducer } from "react";
 import Cookies from "js-cookie";
 import { authReducer, initialAuthState } from "../context/authReducer";
+import { useLocation } from "react-router-dom";
 
 //este custom hook sirve para el AuthContext
+//se encarga de verificar si hay sesión activa al montar la app
+//lee la cookie userData y luego consulta el backend /auth/check
 export function useSessionCheck(API_URL) {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
+  const location = useLocation();
+  const skipSessionCheck =
+    location.pathname.startsWith("/verify-account") ||
+    location.pathname.startsWith("/reset-password");
 
   useEffect(() => {
+    //si ingreso el token para verificar la cuenta, no hace falta
+    //comprobar que estoy conectado
+    if (skipSessionCheck) return;
+
     const checkSession = async () => {
       dispatch({ type: "CHECK_SESSION_START" });
 
@@ -40,7 +51,7 @@ export function useSessionCheck(API_URL) {
     };
 
     checkSession();
-  }, [API_URL]);
+  }, [API_URL, skipSessionCheck]);
 
   return {
     ...state,

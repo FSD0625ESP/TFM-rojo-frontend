@@ -1,28 +1,52 @@
+import { useState } from "react";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
-} from "@/components/ui/tabs";
+} from "../components/ui/tabs";
 import { LeagueLeaderboard } from "../components/LeagueLeaderboard";
 import { SummonerSearch } from "../components/SummonerSearch";
+import { ChampionStats } from "../components/ChampionStats";
+import { ResponsiveTabsNav } from "../components/ResponsiveTabsNav";
 
+//página de estadísticas y acceso público (punto de entrada de la app)
 export function Statistics() {
+  const [activeTab, setActiveTab] = useState("champions");
+  const tabItems = [
+    { label: "Champions Stats", value: "champions", private: false },
+    { label: "Summoner Search", value: "search", private: false },
+    //{ label: "Leaderboard", value: "leaderboard", private: false },
+  ];
+
   return (
-    <Tabs defaultValue="search" className="w-full max-w-5xl mx-auto px-4 py-6">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="search">Summoner Search</TabsTrigger>
-        <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
-      </TabsList>
+    <Tabs
+      value={activeTab}
+      onValueChange={setActiveTab}
+      className="w-full md:p-4"
+    >
+      {/* Header: navegación adaptable */}
+      <ResponsiveTabsNav
+        items={tabItems}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        navigateToRoute={false}
+        basePath=""
+        tabListClassName="grid w-full sm:grid-cols-2 h-full"
+      />
+
+      {/* Content */}
+      <TabsContent value="champions">
+        <ChampionStats />
+      </TabsContent>
 
       <TabsContent value="search">
         <SummonerSearch />
       </TabsContent>
 
-      <TabsContent value="leaderboard">
+      {/* <TabsContent value="leaderboard">
         <LeagueLeaderboard />
-      </TabsContent>
+      </TabsContent> */}
     </Tabs>
   );
 }
-

@@ -1,6 +1,7 @@
 import { ResetPasswordForm } from "../components/ResetPasswordForm";
 import { LogoAndTitle } from "../components/LogoAndTitle.jsx";
 
+//página con el formulario de restablecimiento de contraseña
 export function ResetPassword() {
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">

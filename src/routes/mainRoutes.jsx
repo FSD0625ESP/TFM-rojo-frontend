@@ -7,19 +7,22 @@ import { Login } from "../pages/Login";
 import { Signup } from "../pages/Signup";
 import { ForgotPassword } from "../pages/ForgotPassword";
 import { ResetPassword } from "../pages/ResetPassword";
+import { VerifyAccount } from "../pages/VerifyAccount";
 
-import { Start } from "../pages/Start";
+import { NotFound } from "../pages/NotFound";
+import { SectionNav } from "../components/SectionNav";
+
 import { Statistics } from "../pages/Statistics";
-import { Teams } from "../pages/Teams";
-import { Matchs } from "../pages/Matchs";
-import { Chats } from "../pages/Chats";
+import { Squads } from "../pages/Squads";
+import { Matches } from "../pages/Matches";
+import { Community } from "../pages/Community";
 
-import { Profile } from "../pages/Profile";
 import { MyProfile } from "../pages/MyProfile";
-import { MyTeam } from "../pages/MyTeam";
+import { MySquad } from "../pages/MySquad";
 import { MyStats } from "../pages/MyStats";
 import { MySettings } from "../pages/MySettings";
 
+//definición de rutas principales de la aplicación
 export function MainRoutes() {
   return (
     <Routes>
@@ -29,6 +32,7 @@ export function MainRoutes() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-account" element={<VerifyAccount />} />
       </Route>
 
       {/* Redirección desde raíz "/" a "/start/statistics" */}
@@ -37,35 +41,43 @@ export function MainRoutes() {
       {/* Rutas privadas con AppLayout */}
       <Route path="/" element={<AppLayout />}>
         {/* Start */}
-        <Route path="start" element={<Start />}>
+        <Route
+          path="start"
+          element={
+            <SectionNav sectionTitle="Start" defaultRoute="statistics" />
+          }
+        >
           {/* Redirección desde /start a /start/statistics */}
           <Route index element={<Navigate to="statistics" replace />} />
 
           <Route path="statistics" element={<Statistics />} />
           <Route
-            path="teams"
+            path="squads"
             element={
               <PrivateRoute>
-                <Teams />
+                <Squads />
               </PrivateRoute>
             }
           />
           <Route
-            path="matchs"
+            path="matches"
             element={
               <PrivateRoute>
-                <Matchs />
+                <Matches />
               </PrivateRoute>
             }
           />
           <Route
-            path="chats"
+            path="community"
             element={
               <PrivateRoute>
-                <Chats />
+                <Community />
               </PrivateRoute>
             }
           />
+
+          {/* Página 404 dentro del layout */}
+          <Route path="*" element={<NotFound />} />
         </Route>
 
         {/* Profile y sus subrutas */}
@@ -73,7 +85,7 @@ export function MainRoutes() {
           path="profile"
           element={
             <PrivateRoute>
-              <Profile />
+              <SectionNav sectionTitle="Profile" defaultRoute="my-profile" />
             </PrivateRoute>
           }
         >
@@ -89,10 +101,10 @@ export function MainRoutes() {
             }
           />
           <Route
-            path="my-team"
+            path="my-squad"
             element={
               <PrivateRoute>
-                <MyTeam />
+                <MySquad />
               </PrivateRoute>
             }
           />

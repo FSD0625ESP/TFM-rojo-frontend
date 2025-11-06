@@ -10,6 +10,7 @@ import {
 import { User, Settings, LogOut, LogIn } from "lucide-react";
 import { handleLogout } from "../utils/session";
 import { useNavigate } from "react-router-dom";
+import { IMG_DEFAULT } from "../constants/images";
 
 //bianvenida en header y mini menú de usuario
 export function NavDropdown({ user, isAuthenticated, logout }) {
@@ -25,19 +26,22 @@ export function NavDropdown({ user, isAuthenticated, logout }) {
       <DropdownMenuTrigger asChild>
         <button
           className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition focus:outline-none focus-visible:ring-0"
-          title={`Rol: ${user?.role || "user"}`}
+          title={`Role: ${user?.role || "user"}`}
         >
           <span>
             Welcome,{" "}
             <span className="text-primary">
-              {isAuthenticated && user?.fullName ? user.fullName : "guest user"}
+              {isAuthenticated && user?.userName ? user.userName : "guest user"}
             </span>
           </span>
           <img
-            src={user?.avatarUrl || "/default-avatar.png"}
+            src={user?.avatar || IMG_DEFAULT.avatarGuest.src}
             alt="Avatar"
-            className={`w-8 h-8 rounded-full border-2 p-1 ${user?.isPremium ? "border-yellow-500" : "border-gray-300"
-              }`}
+            className={`w-8 h-8 rounded-full border-2 p-1 ${
+              user?.preferences?.isPremium
+                ? "border-yellow-500"
+                : "border-gray-300"
+            }`}
           />
         </button>
       </DropdownMenuTrigger>
@@ -49,19 +53,28 @@ export function NavDropdown({ user, isAuthenticated, logout }) {
         {isAuthenticated ? (
           <>
             <DropdownMenuItem asChild>
-              <Link to="/profile/my-profile" className="flex items-center gap-2">
+              <Link
+                to="/profile/my-profile"
+                className="flex items-center gap-2"
+              >
                 <User className="size-4" />
                 My Profile
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/profile/my-settings" className="flex items-center gap-2">
+              <Link
+                to="/profile/my-settings"
+                className="flex items-center gap-2"
+              >
                 <Settings className="size-4" />
                 Settings
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout} className="flex items-center gap-2">
+            <DropdownMenuItem
+              onClick={handleClick}
+              className="flex items-center gap-2"
+            >
               <LogOut className="size-4" />
               Logout
             </DropdownMenuItem>

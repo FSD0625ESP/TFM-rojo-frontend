@@ -7,12 +7,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  AlertTriangle,
-  XCircle,
-  CheckCircle,
-  Info,
-} from "lucide-react";
+import { AlertTriangle, XCircle, CheckCircle, Info } from "lucide-react";
 
 const ICONS = {
   warning: <AlertTriangle className="text-yellow-500 size-5" />,

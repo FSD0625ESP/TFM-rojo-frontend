@@ -18,16 +18,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Loader2 } from "lucide-react";
-import { QUEUE_OPTIONS, TIER_OPTIONS, DIVISION_OPTIONS } from '../constants/filters'
+import {
+  QUEUE_OPTIONS,
+  RANKS_OPTIONS,
+  TIERS_OPTIONS,
+} from "../constants/filters";
 
-// Asumiendo que el backend monta la ruta League en /api/riot/league
-const API_BASE_URL = "http://localhost:5000/api/lol/league";
+//backend monta la ruta League en /api/riot/league
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 //listar y filtrar jugadores
 export function LeagueLeaderboard() {
   const [queue, setQueue] = useState(QUEUE_OPTIONS[0].value);
-  const [tier, setTier] = useState(TIER_OPTIONS[3].value); // Diamante por defecto
-  const [division, setDivision] = useState(DIVISION_OPTIONS[0].value); // I por defecto
+  const [tier, setTier] = useState(RANKS_OPTIONS[4].value); // Esmeralda por defecto
+  const [division, setDivision] = useState(TIERS_OPTIONS[0].value); // I por defecto
   const [players, setPlayers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -37,13 +41,13 @@ export function LeagueLeaderboard() {
     setError(null);
     setPlayers([]);
 
-    // La URL final en el backend deberá ser algo como:
+    //la URL final en el backend deberá ser algo como:
     // /api/riot/league/RANKED_SOLO_5x5/DIAMOND/I
-    const url = `${API_BASE_URL}/${queue}/${tier}/${division}`;
-
+    const url = `${API_BASE_URL}/lol/league/${queue}/${tier}/${division}`;
+    //console.log("Fetching leaderboard from URL:", url);
     try {
       const response = await axios.get(url);
-      // El endpoint de Riot devuelve un array de objetos
+      //el endpoint de Riot devuelve un array de objetos
       setPlayers(response.data);
     } catch (err) {
       console.error("Error fetching leaderboard:", err);
@@ -56,23 +60,20 @@ export function LeagueLeaderboard() {
     }
   }, [queue, tier, division]);
 
-  // Cargar datos al montar el componente o al cambiar filtros
+  //cargar datos al montar el componente o al cambiar filtros
   useEffect(() => {
     fetchLeaderboard();
   }, [fetchLeaderboard]);
 
-  // Función para calcular el ratio de victorias
+  //función para calcular el ratio de victorias
   const calculateWinRatio = (wins, losses) => {
     const total = wins + losses;
     return total === 0 ? "0%" : `${((wins / total) * 100).toFixed(1)}%`;
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
+    <div className="container py-2 md:py-4">
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Players Statistics</CardTitle>
-        </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2 mb-6 items-end">
             {/* 1. Tipo de Cola */}
@@ -106,7 +107,7 @@ export function LeagueLeaderboard() {
                   <SelectValue placeholder="Nivel" />
                 </SelectTrigger>
                 <SelectContent>
-                  {TIER_OPTIONS.map((opt) => (
+                  {RANKS_OPTIONS.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
                       {opt.label}
                     </SelectItem>
@@ -132,7 +133,7 @@ export function LeagueLeaderboard() {
                       <SelectValue placeholder="División" />
                     </SelectTrigger>
                     <SelectContent>
-                      {DIVISION_OPTIONS.map((opt) => (
+                      {TIERS_OPTIONS.map((opt) => (
                         <SelectItem key={opt.value} value={opt.value}>
                           {opt.label}
                         </SelectItem>
@@ -216,7 +217,7 @@ export function LeagueLeaderboard() {
 
           {!isLoading && players.length === 0 && !error && (
             <p className="text-sm text-center text-muted-foreground mt-8">
-              No se encontraron jugadores en la liga y división seleccionada.
+              No players found in the league and division selected.
             </p>
           )}
         </CardContent>

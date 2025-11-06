@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { toast } from "sonner";
@@ -28,12 +27,7 @@ import {
   FieldGroup,
   FieldSeparator,
 } from "../components/ui/field";
-
-//schema de validaciones de zod
-const loginSchema = z.object({
-  email: z.string().email({ message: "Email inválido" }),
-  password: z.string().min(6, { message: "Mínimo 6 caracteres" }),
-});
+import { loginSchema } from "../schemas/userSchemas";
 
 //formulario de login para la page de login
 export function LoginForm({ className, ...props }) {
@@ -56,9 +50,9 @@ export function LoginForm({ className, ...props }) {
     const result = await login(values);
     if (result.success) {
       navigate(from, { replace: true });
-      toast.success("Inicio de sesión exitoso ✅");
+      toast.success("Login successful ✅");
     } else {
-      toast.error("Error al iniciar sesión ❌ " + result.message);
+      toast.error("Error logging in ❌ " + result.message);
     }
   };
 
@@ -103,7 +97,10 @@ export function LoginForm({ className, ...props }) {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="miusuario@lolmatch.com" {...field} />
+                        <Input
+                          placeholder="miusuario@lolmatch.com"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -125,7 +122,11 @@ export function LoginForm({ className, ...props }) {
                         </Link>
                       </div>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} />
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -135,7 +136,8 @@ export function LoginForm({ className, ...props }) {
                 <Field>
                   <Button type="submit">Login</Button>
                   <FieldDescription className="text-center">
-                    Don&apos;t have an account? <Link to="/signup">Sign up</Link>
+                    Don&apos;t have an account?{" "}
+                    <Link to="/signup">Sign up</Link>
                   </FieldDescription>
                 </Field>
               </FieldGroup>
