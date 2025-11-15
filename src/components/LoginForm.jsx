@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { toast } from "sonner";
 import { cn } from "../lib/utils";
+import { verifyTwoFactor } from "../services/authService";
 import {
   Form,
   FormField,
@@ -29,19 +32,34 @@ import {
 } from "../components/ui/field";
 import { loginSchema } from "../schemas/userSchemas";
 
+//esquema para validar código 2FA
+const twoFactorSchema = z.object({
+  code: z.string().length(6, "Code must be 6 digits"),
+});
+
 //formulario de login para la page de login
 export function LoginForm({ className, ...props }) {
-  const { login } = useAuth();
+  const { login, refreshUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
+  const [twoFactorEmail, setTwoFactorEmail] = useState("");
 
-  //inicializa con valores vacíos
-  const form = useForm({
+  //formulario de login
+  const loginForm = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
+    },
+  });
+
+  //formulario de código 2FA
+  const twoFactorForm = useForm({
+    resolver: zodResolver(twoFactorSchema),
+    defaultValues: {
+      code: "",
     },
   });
 
@@ -51,10 +69,113 @@ export function LoginForm({ className, ...props }) {
     if (result.success) {
       navigate(from, { replace: true });
       toast.success("Login successful ✅");
+    } else if (result.requiresTwoFactor) {
+      //mostrar formulario de código 2FA
+      setRequiresTwoFactor(true);
+      setTwoFactorEmail(result.email);
+      toast.info("Check your email for the verification code");
     } else {
       toast.error("Error logging in ❌ " + result.message);
     }
   };
+
+  //handler para verificar código 2FA
+  const onVerifyCode = async (values) => {
+    try {
+      const data = await verifyTwoFactor({
+        email: twoFactorEmail,
+        code: values.code,
+      });
+      
+      //el login se completa automáticamente con la cookie
+      //actualizar el contexto y redirigir
+      await refreshUser();
+      
+      //si hay otras sesiones activas, mostrar toast
+      if (data.hasOtherSessions) {
+        toast.warning(
+          "New login detected from another device. Check your active sessions.",
+          {
+            duration: 5000,
+          }
+        );
+      } else {
+        toast.success("Login successful ✅");
+      }
+      
+      navigate(from, { replace: true });
+    } catch (err) {
+      const errorMessage = err.message || "Invalid code ❌";
+      toast.error(errorMessage);
+      twoFactorForm.setError("code", {
+        type: "server",
+        message: "Invalid or expired code",
+      });
+    }
+  };
+
+  //si requiere 2FA, mostrar formulario de código
+  if (requiresTwoFactor) {
+    return (
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl">Two-Factor Authentication</CardTitle>
+            <CardDescription>
+              Enter the 6-digit code sent to your email
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...twoFactorForm}>
+              <form onSubmit={twoFactorForm.handleSubmit(onVerifyCode)}>
+                <FieldGroup>
+                  <FormField
+                    control={twoFactorForm.control}
+                    name="code"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Verification Code</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="000000"
+                            maxLength={6}
+                            className="text-center text-2xl tracking-widest"
+                            {...field}
+                            onChange={(e) => {
+                              //solo permitir números
+                              const value = e.target.value.replace(/\D/g, "");
+                              field.onChange(value);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Field>
+                    <Button type="submit" className="w-full">
+                      Verify Code
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        setRequiresTwoFactor(false);
+                        twoFactorForm.reset();
+                      }}
+                    >
+                      Back to Login
+                    </Button>
+                  </Field>
+                </FieldGroup>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -64,8 +185,8 @@ export function LoginForm({ className, ...props }) {
           <CardDescription>Login with your Riot account</CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Form {...loginForm}>
+            <form onSubmit={loginForm.handleSubmit(onSubmit)}>
               <FieldGroup>
                 <Field>
                   <a
@@ -91,7 +212,7 @@ export function LoginForm({ className, ...props }) {
                 </FieldSeparator>
 
                 <FormField
-                  control={form.control}
+                  control={loginForm.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
@@ -108,7 +229,7 @@ export function LoginForm({ className, ...props }) {
                 />
 
                 <FormField
-                  control={form.control}
+                  control={loginForm.control}
                   name="password"
                   render={({ field }) => (
                     <FormItem>

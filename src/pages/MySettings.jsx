@@ -1,9 +1,9 @@
-import { ProfileSetContent } from "../components/ProfileSetContent";
+import { ProfileSettings } from "../components/ProfileSettings";
 
 export function MySettings() {
   return (
     <div className="w-full md:p-4">
-      <ProfileSetContent />
+      <ProfileSettings />
     </div>
   );
 }
