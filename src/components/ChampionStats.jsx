@@ -49,7 +49,7 @@ export function ChampionStats() {
       setChampions(MOCK_CHAMPIONS);
       setVisibleCount(10); //reiniciar al cambiar filtros
       setIsLoading(false);
-    }, 800);
+    }, 100);
   }, [patch, region, rank, queue]);
 
   //lógica de filtrado y paginación

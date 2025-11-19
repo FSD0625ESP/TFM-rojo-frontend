@@ -8,6 +8,7 @@ import { Signup } from "../pages/Signup";
 import { ForgotPassword } from "../pages/ForgotPassword";
 import { ResetPassword } from "../pages/ResetPassword";
 import { VerifyAccount } from "../pages/VerifyAccount";
+import { DeleteAccount } from "../pages/DeleteAccount";
 
 import { NotFound } from "../pages/NotFound";
 import { SectionNav } from "../components/SectionNav";
@@ -33,6 +34,7 @@ export function MainRoutes() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-account" element={<VerifyAccount />} />
+        <Route path="/delete-account" element={<DeleteAccount />} />
       </Route>
 
       {/* Redirección desde raíz "/" a "/start/statistics" */}

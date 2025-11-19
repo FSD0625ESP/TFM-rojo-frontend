@@ -9,7 +9,12 @@ export function normalizeUrl(endpoint) {
 export async function parseError(res) {
   try {
     const error = await res.json();
-    return error.message || JSON.stringify(error);
+    //si hay un array de errores de validación, devolver el objeto completo
+    if (error.errors && Array.isArray(error.errors)) {
+      return error;
+    }
+    //si hay un mensaje, devolverlo
+    return error.message || error;
   } catch {
     const text = await res.text();
     return text || "API error occurred ❌";
@@ -27,7 +32,9 @@ export async function makeRequest(endpoint, method = "GET", body = null) {
 
   if (!res.ok) {
     const error = await parseError(res);
-    throw new Error(`${res.status}: ${error}`);
+    //si el error es un objeto, convertirlo a string JSON para mantener la estructura
+    const errorString = typeof error === "object" ? JSON.stringify(error) : error;
+    throw new Error(`${res.status}: ${errorString}`);
   }
 
   return res.status === 204 ? null : res.json();
