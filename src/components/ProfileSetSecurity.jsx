@@ -21,6 +21,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "../components/ui/dialog";
 import { PasswordForm } from "./PasswordForm";
 import { TwoFactorSetup } from "./TwoFactorSetup";
@@ -132,9 +133,12 @@ export function ProfileSetSecurity() {
       </Card>
       {/* Modal Password */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className="p-8" aria-describedby="change-password-dialog-description">
           <DialogHeader>
             <DialogTitle>Change Password</DialogTitle>
+            <DialogDescription id="change-password-dialog-description">
+              Update your password to keep your account secure. You will receive an email confirmation after the change.
+            </DialogDescription>
           </DialogHeader>
           <PasswordForm onSuccess={() => setOpen(false)} />
         </DialogContent>

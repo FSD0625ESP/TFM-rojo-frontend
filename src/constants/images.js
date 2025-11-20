@@ -5,6 +5,8 @@ const CLOUDINARY_BASE_URL =
 //modificadores para recortar y optimizar imágenes
 //tamaño 300x300, c_fit redimensiona sin recortar, f_auto mejor formato, q_auto mejora calidad
 const MODIFIER_300 = "w_300,h_300,c_fit,f_auto,q_auto/";
+//tamaño 250x250, c_fit redimensiona sin recortar, f_auto mejor formato, q_auto mejora calidad
+const MODIFIER_250 = "w_250,h_250,c_fit,f_auto,q_auto/";
 
 //folder dentro de cloudinary
 const FOLDER = "v1762381404/";
@@ -66,3 +68,22 @@ export const IMG_ROLES = {
     alt: "support-role",
   },
 };
+
+//función generadora dinámica de avatares de prueba
+export const createAvatarMocks = (count) => {
+  const avatars = {};
+
+  for (let i = 1; i <= count; i++) {
+    const num = String(i).padStart(2, "0"); //asegura formato 01, 02...
+    const key = `a${num}`; //clave para el avatar, formato a01, a02, ...
+
+    avatars[key] = {
+      src: `${CLOUDINARY_BASE_URL}${MODIFIER_250}${FOLDER}avatar-mock-${num}.webp`,
+      alt: `avatar-${num}`,
+    };
+  }
+
+  return avatars;
+};
+
+export const IMG_AVATAR_MOCKS = createAvatarMocks(22);

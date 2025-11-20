@@ -1,4 +1,4 @@
-import { StartGGMatchContent } from "../components/StartGGMatchContent";
+import { StartGGMatchContent } from "../components/StartGGMatch/StartGGMatchContent";
 
 export function Matches() {
   return (

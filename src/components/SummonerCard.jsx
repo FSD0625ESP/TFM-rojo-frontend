@@ -7,7 +7,8 @@ import {
   CardContent,
 } from "../components/ui/card";
 import { Loader2 } from "lucide-react";
-import { IMG_DEFAULT } from "../constants/images";
+import { Badge } from "../components/ui/badge";
+import { IMG_DEFAULT, IMG_ROLES } from "../constants/images";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -25,11 +26,11 @@ export function SummonerCard({ summonerName, gameName, tagLine, onError }) {
       try {
         const query = summonerName
           ? `${API_BASE}/lol/summoner?summonerName=${encodeURIComponent(
-              summonerName
-            )}`
+            summonerName
+          )}`
           : `${API_BASE}/lol/summoner?gameName=${encodeURIComponent(
-              gameName
-            )}&tagLine=${encodeURIComponent(tagLine)}`;
+            gameName
+          )}&tagLine=${encodeURIComponent(tagLine)}`;
 
         const response = await axios.get(query);
 
@@ -72,45 +73,78 @@ export function SummonerCard({ summonerName, gameName, tagLine, onError }) {
   //no renderizamos errores aquí; el padre mostrará el modal
   if (error) return null;
 
+  // Parsear tier para separar rank y tier
+  const tierParts = summoner.tier ? summoner.tier.split(" ") : [];
+  const rank = tierParts.length > 0 ? tierParts[0] : "Unranked";
+  const tier = tierParts.length > 1 ? tierParts[1] : (tierParts[0] && tierParts[0] !== "Unranked" ? tierParts[0] : "N/A");
+
   return (
-    <Card className="w-full max-w-md mx-auto mt-6 bg-gradient-to-br from-[#0a0a0a] to-[#1c1c1c] border-[1.5px] border-yellow-600 shadow-xl rounded-xl text-white p-6">
-      <div className="flex flex-col items-center space-y-3">
-        <img
-          src={summoner.profileIconUrl}
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = IMG_DEFAULT.profileIcon.src;
-          }}
-          alt="Icono de perfil"
-          className="w-50 h-50 rounded-full border-4 border-yellow-500 shadow-lg p-4"
-        />
-        <p className="text-2xl text-yellow-700 font-bold">
-          Level {summoner.summonerLevel}
-        </p>
-        <h2 className="text-2xl font-bold text-yellow-400 text-center">
-          {summoner.summonerName}
-        </h2>
-      </div>
-
-      <div className="mt-6 grid grid-cols-2 gap-y-4 gap-x-2 text-sm">
-        <div className="text-gray-400">League</div>
-        <div className="font-semibold text-yellow-300 text-right">
-          {summoner.queueType}
+    <Card className="w-full max-w-sm mx-auto mt-6 bg-neutral-900 rounded-xl border-4 border-yellow-600 text-white p-0 h-[500px]">
+      {/* Grid principal: 50% superior y 50% inferior */}
+      <div className="grid grid-rows-2 h-full">
+        {/* 50% superior: Avatar y Username */}
+        <div className="flex flex-col items-center justify-center gap-3 p-6 border-b-2 border-white/20">
+          <img
+            src={summoner.profileIconUrl}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = IMG_DEFAULT.profileIcon.src;
+            }}
+            alt="Icono de perfil"
+            draggable={false}
+            className="w-40 h-40 rounded-full border-4 border-white object-cover select-none"
+          />
+          <div className="text-center">
+            <h3 className="text-xl font-semibold text-white">
+              {summoner.summonerName}
+            </h3>
+            <p className="text-sm text-white/70 mt-1">
+              Level {summoner.summonerLevel}
+            </p>
+          </div>
         </div>
 
-        <div className="text-gray-400">Rank</div>
-        <div className="font-semibold text-yellow-300 text-right">
-          {summoner.tier}
-        </div>
+        {/* 50% inferior: 4 cuadrantes */}
+        <div className="grid grid-cols-2 grid-rows-2">
+          {/* Cuadrante 1: Rank */}
+          <div className="flex flex-col items-center justify-center p-4 border-r-2 border-b-2 border-white/20 bg-neutral-800/50">
+            <span className="text-xs text-white/70 mb-2 font-medium uppercase">
+              Rank
+            </span>
+            <Badge variant="secondary" className="text-xl font-semibold">
+              {rank}
+            </Badge>
+          </div>
 
-        <div className="text-gray-400">Wins</div>
-        <div className="font-semibold text-yellow-300 text-right">
-          {summoner.wins}
-        </div>
+          {/* Cuadrante 2: Tier */}
+          <div className="flex flex-col items-center justify-center p-4 border-b-2 border-white/20 bg-neutral-800/50">
+            <span className="text-xs text-white/70 mb-2 font-medium uppercase">
+              Tier
+            </span>
+            <Badge variant="outline" className="text-xl font-semibold border-white/30 text-white">
+              {tier}
+            </Badge>
+          </div>
 
-        <div className="text-gray-400">Winrate</div>
-        <div className="font-semibold text-yellow-300 text-right">
-          {summoner.winrate}
+          {/* Cuadrante 3: Queue */}
+          <div className="flex flex-col items-center justify-center p-4 border-r-2 border-white/20 bg-neutral-800/50">
+            <span className="text-xs text-white/70 mb-2 font-medium uppercase">
+              Queue
+            </span>
+            <span className="text-sm font-semibold text-white text-center px-2">
+              {summoner.queueType || "N/A"}
+            </span>
+          </div>
+
+          {/* Cuadrante 4: Winrate */}
+          <div className="flex flex-col items-center justify-center p-4 bg-neutral-800/50">
+            <span className="text-xs text-white/70 mb-2 font-medium uppercase">
+              Winrate
+            </span>
+            <span className="text-xl font-semibold text-white">
+              {summoner.winrate || "N/A"}
+            </span>
+          </div>
         </div>
       </div>
     </Card>
