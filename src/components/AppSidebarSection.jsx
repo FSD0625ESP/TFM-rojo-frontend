@@ -5,6 +5,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
+  useSidebar,
 } from "../components/ui/sidebar";
 
 //sirve para mostrar el menú desplegable con los enlaces en AppSidebar
@@ -15,8 +16,16 @@ export function AppSidebarSection({
   location,
   isAuthenticated,
 }) {
+  const { isMobile, setOpenMobile } = useSidebar();
   const isActive = location.pathname.startsWith(section.url);
   const { Icon } = section;
+
+  // Cerrar el sidebar en móvil/tablet cuando se hace clic en un enlace
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   return (
     <SidebarMenuItem key={section.title}>
@@ -52,6 +61,7 @@ export function AppSidebarSection({
                     // si el enlace está activo, se muestra como Link normal
                     <Link
                       to={item.url}
+                      onClick={handleLinkClick}
                       className={`${
                         location.pathname === item.url
                           ? "text-primary font-semibold"
