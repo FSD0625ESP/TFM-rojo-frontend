@@ -7,10 +7,7 @@ import {
 } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import {
-  Tabs,
-  TabsContent,
-} from "../components/ui/tabs";
+import { Tabs, TabsContent } from "../components/ui/tabs";
 import { useAuth } from "../context/AuthContext";
 
 export function ProfileStatsContent() {
@@ -30,7 +27,7 @@ export function ProfileStatsContent() {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="champion">Most Played Champion</Label>
+                <Label htmlFor="champion">Champion</Label>
                 <Input
                   className="bg-muted"
                   id="champion"
@@ -101,14 +98,6 @@ export function ProfileStatsContent() {
                   placeholder="Ranked Flex 5v5"
                 />
               </div>
-              <Label htmlFor="mySquad">My Squad</Label>
-              <Input
-                className="bg-muted"
-                id="mySquad"
-                defaultValue={user?.lolProfile?.mySquad || ""}
-                readOnly
-                placeholder="Nexxus Squad"
-              />
             </div>
           </CardContent>
         </Card>

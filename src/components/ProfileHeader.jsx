@@ -26,6 +26,8 @@ export function ProfileHeader() {
               <AvatarImage
                 src={user?.avatar || IMG_DEFAULT.avatar.src}
                 alt="avatar"
+                draggable={false}
+                className="select-none"
               />
               <AvatarFallback className="text-2xl">JD</AvatarFallback>
             </Avatar>

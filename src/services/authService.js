@@ -56,3 +56,6 @@ export const confirmDeleteAccount = (token) =>
 //exportar datos del usuario
 export const exportUserData = () =>
   makeRequest("/auth/export-data", "POST");
+//obtener lista de timezones disponibles
+export const getTimezones = () =>
+  makeRequest("/auth/timezones", "GET");

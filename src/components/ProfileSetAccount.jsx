@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Trash2 } from "lucide-react";
+import { Trash2, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { updatePreferences, requestDeleteAccount, exportUserData } from "../services/authService";
+import { updatePreferences, requestDeleteAccount, exportUserData, getTimezones } from "../services/authService";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -16,6 +16,13 @@ import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
 import { Switch } from "../components/ui/switch";
 import { Badge } from "../components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -36,11 +43,37 @@ export function ProfileSetAccount() {
   const [deleteAccountLoading, setDeleteAccountLoading] = useState(false);
   const [exportDataDialogOpen, setExportDataDialogOpen] = useState(false);
   const [exportDataLoading, setExportDataLoading] = useState(false);
+  const [timezone, setTimezone] = useState(
+    user?.preferences?.timezone || "Europe/Madrid"
+  );
+  const [timezones, setTimezones] = useState([]);
+  const [timezonesLoading, setTimezonesLoading] = useState(false);
+  const [timezoneUpdating, setTimezoneUpdating] = useState(false);
+
+  //cargar timezones disponibles al montar el componente
+  useEffect(() => {
+    const loadTimezones = async () => {
+      setTimezonesLoading(true);
+      try {
+        const data = await getTimezones();
+        if (data?.timezones) {
+          setTimezones(data.timezones);
+        }
+      } catch (err) {
+        console.error("Error loading timezones:", err);
+        toast.error("Error loading timezones ❌");
+      } finally {
+        setTimezonesLoading(false);
+      }
+    };
+    loadTimezones();
+  }, []);
 
   //actualizar estado cuando cambie el usuario
   useEffect(() => {
     if (user?.preferences) {
       setIsVisible(user.preferences.isVisible ?? true);
+      setTimezone(user.preferences.timezone || "Europe/Madrid");
     }
   }, [user]);
 
@@ -89,6 +122,23 @@ export function ProfileSetAccount() {
       toast.error(err.message || "Error exporting data ❌");
     } finally {
       setExportDataLoading(false);
+    }
+  };
+
+  //handler para actualizar timezone
+  const handleTimezoneChange = async (newTimezone) => {
+    setTimezoneUpdating(true);
+    try {
+      setTimezone(newTimezone);
+      await updatePreferences({ timezone: newTimezone });
+      await refreshUser();
+      toast.success("Timezone updated successfully ✅");
+    } catch (err) {
+      toast.error(err.message || "Error updating timezone ❌");
+      //revertir el cambio en caso de error
+      setTimezone(user?.preferences?.timezone || "Europe/Madrid");
+    } finally {
+      setTimezoneUpdating(false);
     }
   };
 
@@ -169,6 +219,52 @@ export function ProfileSetAccount() {
             >
               Export Data
             </Button>
+          </div>
+
+          <Separator />
+
+          {/* Timezone */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <Label className="text-base flex items-center gap-2">
+                Timezone
+              </Label>
+              <p className="text-muted-foreground text-sm">
+                Select your timezone for accurate date and time display
+              </p>
+            </div>
+            {/* Selector de timezone */}
+            <div className="w-full sm:w-[300px]">
+              <Select
+                value={timezone}
+                onValueChange={handleTimezoneChange}
+                disabled={timezoneUpdating || timezonesLoading}
+              >
+                <SelectTrigger className="w-full text-md">
+                  <SelectValue placeholder="Select timezone">
+                    {timezones.find((tz) => tz.value === timezone)?.label ||
+                      timezone.replace(/_/g, " ")}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px]">
+                  {timezonesLoading ? (
+                    <SelectItem value="loading" disabled className="text-md">
+                      Loading timezones...
+                    </SelectItem>
+                  ) : timezones.length > 0 ? (
+                    timezones.map((tz) => (
+                      <SelectItem key={tz.value} value={tz.value} className="text-md">
+                        {tz.label}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="no-timezones" disabled className="text-md">
+                      No timezones available
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>

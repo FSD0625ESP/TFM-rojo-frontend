@@ -67,3 +67,18 @@ export const changePasswordSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+//schema para actualizar squad
+export const updateSquadSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Squad name is required")
+    .max(100, "Squad name must be at most 100 characters"),
+  description: z
+    .string()
+    .trim()
+    .max(500, "Description must be at most 500 characters")
+    .optional()
+    .default(""),
+});
