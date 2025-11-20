@@ -15,6 +15,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarFooter,
+  useSidebar,
 } from "./ui/sidebar";
 import { Card, CardContent } from "./ui/card";
 import { IMG_DEFAULT } from "../constants/images";
@@ -25,7 +26,15 @@ export function AppSidebar(props) {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { isMobile, setOpenMobile } = useSidebar();
   const [expanded, setExpanded] = useState({ Start: true });
+
+  // Cerrar el sidebar en móvil/tablet cuando se hace clic en un enlace
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const toggleExpand = (sectionTitle) => {
     setExpanded((prev) => ({
@@ -36,6 +45,10 @@ export function AppSidebar(props) {
 
   // acción condicional según estado de sesión
   const handleSessionClick = async () => {
+    // Cerrar el sidebar en móvil/tablet antes de navegar
+    if (isMobile) {
+      setOpenMobile(false);
+    }
     if (isAuthenticated) {
       await handleLogout({ logout, navigate, redirectTo: "/start/statistics" });
     } else {
@@ -58,7 +71,7 @@ export function AppSidebar(props) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="xl" asChild>
-              <Link to="/" className="flex items-center gap-2">
+              <Link to="/" onClick={handleLinkClick} className="flex items-center gap-2">
                 <img
                   src={IMG_DEFAULT.logo.src}
                   alt={IMG_DEFAULT.logo.alt}
