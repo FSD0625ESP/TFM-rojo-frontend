@@ -51,3 +51,34 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
     message: "Passwords do not match",
   });
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(8, "Current password is required"),
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[A-Z]/, "Must contain at least one uppercase letter")
+      .regex(/[0-9]/, "Must contain at least one number")
+      .regex(/[^A-Za-z0-9]/, "Must contain at least one special character"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+//schema para actualizar squad
+export const updateSquadSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Squad name is required")
+    .max(100, "Squad name must be at most 100 characters"),
+  description: z
+    .string()
+    .trim()
+    .max(500, "Description must be at most 500 characters")
+    .optional()
+    .default(""),
+});
