@@ -41,12 +41,21 @@ export const RANKS_OPTIONS = [
 //   { value: "IRON", label: "Hierro" },
 // ];
 
+//honor levels ENG
+export const HONOR_OPTIONS = [
+  { value: "1", label: "Honor 1" },
+  { value: "2", label: "Honor 2" },
+  { value: "3", label: "Honor 3" },
+  { value: "4", label: "Honor 4" },
+  { value: "5", label: "Honor 5" },
+];
+
 //divisiones dentro de cada rank
 export const TIERS_OPTIONS = [
-  { value: "I", label: "I (Uno)" },
-  { value: "II", label: "II (Dos)" },
-  { value: "III", label: "III (Tres)" },
-  { value: "IV", label: "IV (Cuatro)" },
+  { value: "I", label: "I (One)" },
+  { value: "II", label: "II (Two)" },
+  { value: "III", label: "III (Three)" },
+  { value: "IV", label: "IV (Four)" },
 ];
 
 //roles de juego
@@ -56,26 +65,31 @@ export const ROLE_OPTIONS = [
     value: "TOP",
     label: "Top",
     src: IMG_ROLES.top.src,
+    color: "color-purple-900",
   },
   {
     value: "JUNGLE",
     label: "Jungle",
     src: IMG_ROLES.jungle.src,
+    color: "color-green-900",
   },
   {
     value: "MID",
     label: "Mid",
     src: IMG_ROLES.mid.src,
+    color: "color-blue-900",
   },
   {
     value: "ADC",
     label: "ADC",
     src: IMG_ROLES.adc.src,
+    color: "color-red-900",
   },
   {
     value: "SUPPORT",
     label: "Support",
     src: IMG_ROLES.support.src,
+    color: "color-yellow-900",
   },
 ];
 
