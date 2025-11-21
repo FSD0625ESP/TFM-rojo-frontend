@@ -86,10 +86,20 @@ export function AuthProvider({ children }) {
       return { success: false };
     }
   };
+  //función para actualizar el usuario en el contexto
+  const updateUser = (newData) => {
+    dispatch({ type: "UPDATE_USER", payload: newData });
+    Cookies.set("userData", JSON.stringify(newData), { expires: 7 });
+
+    dispatch({ type: "UPDATE_USER", payload: newData });
+    Cookies.set("userData", JSON.stringify(newData), { expires: 7 });
+
+
+  };
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, loading, login, logout, refreshUser }}
+      value={{ user, isAuthenticated, loading, login, logout, refreshUser,updateUser }}
     >
       {children}
     </AuthContext.Provider>
