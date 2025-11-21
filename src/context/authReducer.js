@@ -45,6 +45,11 @@ export function authReducer(state, action) {
         isAuthenticated: false,
         loading: false,
       };
+    case "UPDATE_USER":
+      return {
+        ...state,
+        user: action.payload,
+      };
 
     default:
       //acción desconocida, se retorna el estado actual sin cambios
