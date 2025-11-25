@@ -14,6 +14,45 @@ import { Textarea } from "../components/ui/textarea";
 import { Button } from "../components/ui/button";
 import { useAuth } from "../context/AuthContext";
 
+// 👇 NUEVOS IMPORTS PARA LOS MENÚS DESPLEGABLES
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+
+// 👇 CONSTANTES DE DATOS (Las definimos fuera para que no molesten)
+const REGIONS = [
+  "EUW",
+  "NA",
+  "EUNE",
+  "KR",
+  "JP",
+  "BR",
+  "LAS",
+  "LAN",
+  "OCE",
+  "RU",
+  "TR",
+];
+const ROLES = ["Top", "Jungle", "Mid", "ADC", "Support"];
+const RANKS = [
+  "Unranked",
+  "Iron",
+  "Bronze",
+  "Silver",
+  "Gold",
+  "Platinum",
+  "Emerald",
+  "Diamond",
+  "Master",
+  "Grandmaster",
+  "Challenger",
+];
+const DIVISIONS = ["I", "II", "III", "IV"];
+
 export function ProfileContent() {
   const { user, updateUser } = useAuth();
 
@@ -29,14 +68,18 @@ export function ProfileContent() {
     discord: user?.contact?.discord || "",
     hobbies: user?.contact?.hobbies || "",
     bio: user?.profile?.bio || "",
+    gameName: user?.lolProfile?.gameName || "",
+    tagLine: user?.lolProfile?.tagLine || "",
+    region: user?.lolProfile?.region || "",
+    roleLol: user?.lolProfile?.roleLol || "",
+    tier: user?.lolProfile?.tier || "",
+    ranks: user?.lolProfile?.ranks || "",
   });
 
   // 🎨 ESTILOS DINÁMICOS:
-  // Si NO estamos editando (!isEditing), aplicamos estas clases para "apagar" los inputs.
-  // "bg-secondary/40": Fondo grisáceo oscuro (ajústalo si quieres más o menos transparencia).
-  // "border-transparent": Quita el borde blanco/gris.
-  // "shadow-none": Quita sombras.
-  // "focus-visible:ring-0": Quita el anillo azul/blanco al hacer click.
+  const DISABLED_STYLE =
+    "bg-secondary/40 border-transparent shadow-none focus-visible:ring-0 cursor-not-allowed text-muted-foreground opacity-70";
+
   const readOnlyClass = !isEditing
     ? "bg-secondary/40 border-transparent shadow-none focus-visible:ring-0 cursor-default text-muted-foreground"
     : "";
@@ -53,6 +96,12 @@ export function ProfileContent() {
         discord: user.contact?.discord || "",
         hobbies: user.contact?.hobbies || "",
         bio: user.profile?.bio || "",
+        gameName: user.lolProfile?.gameName || "",
+        tagLine: user.lolProfile?.tagLine || "",
+        region: user.lolProfile?.region || "",
+        roleLol: user.lolProfile?.roleLol || "",
+        tier: user.lolProfile?.tier || "",
+        ranks: user.lolProfile?.ranks || "",
       });
     }
   }, [user]);
@@ -91,7 +140,6 @@ export function ProfileContent() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              
               {/* First Name */}
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
@@ -102,7 +150,7 @@ export function ProfileContent() {
                     setFormData({ ...formData, firstName: e.target.value })
                   }
                   readOnly={!isEditing}
-                  className={readOnlyClass} // <--- APLICADO AQUÍ
+                  className={readOnlyClass}
                 />
               </div>
 
@@ -116,22 +164,19 @@ export function ProfileContent() {
                     setFormData({ ...formData, lastName: e.target.value })
                   }
                   readOnly={!isEditing}
-                  className={readOnlyClass} // <--- APLICADO AQUÍ
+                  className={readOnlyClass}
                 />
               </div>
 
-              {/* Email */}
+              {/* Email - SIEMPRE BLOQUEADO */}
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  readOnly={!isEditing}
-                  className={readOnlyClass} // <--- APLICADO AQUÍ
+                  readOnly={true}
+                  className={DISABLED_STYLE}
                 />
               </div>
 
@@ -145,7 +190,7 @@ export function ProfileContent() {
                     setFormData({ ...formData, phone: e.target.value })
                   }
                   readOnly={!isEditing}
-                  className={readOnlyClass} // <--- APLICADO AQUÍ
+                  className={readOnlyClass}
                 />
               </div>
 
@@ -159,7 +204,7 @@ export function ProfileContent() {
                     setFormData({ ...formData, city: e.target.value })
                   }
                   readOnly={!isEditing}
-                  className={readOnlyClass} // <--- APLICADO AQUÍ
+                  className={readOnlyClass}
                 />
               </div>
 
@@ -173,7 +218,7 @@ export function ProfileContent() {
                     setFormData({ ...formData, country: e.target.value })
                   }
                   readOnly={!isEditing}
-                  className={readOnlyClass} // <--- APLICADO AQUÍ
+                  className={readOnlyClass}
                 />
               </div>
             </div>
@@ -188,7 +233,7 @@ export function ProfileContent() {
                   setFormData({ ...formData, discord: e.target.value })
                 }
                 readOnly={!isEditing}
-                className={readOnlyClass} // <--- APLICADO AQUÍ
+                className={readOnlyClass}
               />
 
               {/* Hobbies */}
@@ -200,7 +245,7 @@ export function ProfileContent() {
                   setFormData({ ...formData, hobbies: e.target.value })
                 }
                 readOnly={!isEditing}
-                className={readOnlyClass} // <--- APLICADO AQUÍ
+                className={readOnlyClass}
               />
 
               {/* Bio (Textarea) */}
@@ -213,18 +258,187 @@ export function ProfileContent() {
                 }
                 readOnly={!isEditing}
                 rows={6}
-                // Para el textarea añadimos resize-none para que no se pueda estirar si no estamos editando
-                className={`resize-none ${readOnlyClass}`} 
+                className={`resize-none ${readOnlyClass}`}
               />
             </div>
 
+            {/* SECCIÓN SUMMONER INFO (Con Selects) */}
+            <div className="pt-6 border-t">
+              <h3 className="text-lg font-medium mb-4">Summoner Info</h3>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {/* Game Name */}
+                <div className="space-y-2">
+                  <Label>Game Name</Label>
+                  <Input
+                    value={formData.gameName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, gameName: e.target.value })
+                    }
+                    readOnly={!isEditing}
+                    className={readOnlyClass}
+                  />
+                </div>
+
+                {/* Tag Line (#) con Prefijo Visual Fijo */}
+                <div className="space-y-2">
+                  <Label>Tag Line</Label>
+                  <div className="relative">
+                    {/* SÍMBOLO # FIJO */}
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground select-none font-medium">
+                      #
+                    </span>
+
+                    <Input
+                      placeholder="EUW"
+                      value={formData.tagLine}
+                      onChange={(e) => {
+                        // Truco: Si el usuario escribe "#", lo borramos para que no se duplique
+                        const cleanValue = e.target.value.replace(/^#/, "");
+                        setFormData({ ...formData, tagLine: cleanValue });
+                      }}
+                      readOnly={!isEditing}
+                      // Añadimos 'pl-7' (padding-left) para dejar hueco al símbolo #
+                      className={`${readOnlyClass} pl-7`}
+                    />
+                  </div>
+                </div>
+
+                {/* REGION (SELECT) */}
+                <div className="space-y-2">
+                  <Label>Region</Label>
+                  {isEditing ? (
+                    <Select
+                      value={formData.region}
+                      onValueChange={(val) =>
+                        setFormData({ ...formData, region: val })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Region" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {REGIONS.map((region) => (
+                          <SelectItem key={region} value={region}>
+                            {region}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      value={formData.region}
+                      readOnly
+                      className={readOnlyClass}
+                    />
+                  )}
+                </div>
+
+                {/* MAIN ROLE (SELECT) */}
+                <div className="space-y-2">
+                  <Label>Main Role</Label>
+                  {isEditing ? (
+                    <Select
+                      value={formData.roleLol}
+                      onValueChange={(val) =>
+                        setFormData({ ...formData, roleLol: val })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ROLES.map((role) => (
+                          <SelectItem key={role} value={role}>
+                            {role}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      value={formData.roleLol}
+                      readOnly
+                      className={readOnlyClass}
+                    />
+                  )}
+                </div>
+
+                {/* RANK (SELECT) */}
+                <div className="space-y-2">
+                  <Label>Rank (Elo)</Label>
+                  {isEditing ? (
+                    <Select
+                      value={formData.ranks}
+                      onValueChange={(val) =>
+                        setFormData({ ...formData, ranks: val })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Rank" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {RANKS.map((rank) => (
+                          <SelectItem key={rank} value={rank}>
+                            {rank}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      value={formData.ranks}
+                      readOnly
+                      className={readOnlyClass}
+                    />
+                  )}
+                </div>
+
+                {/* TIER/DIVISION (SELECT) */}
+                <div className="space-y-2">
+                  <Label>Division</Label>
+                  {isEditing ? (
+                    <Select
+                      value={formData.tier}
+                      onValueChange={(val) =>
+                        setFormData({ ...formData, tier: val })
+                      }
+                      disabled={
+                        formData.ranks === "Challenger" ||
+                        formData.ranks === "Grandmaster" ||
+                        formData.ranks === "Master"
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Division" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {DIVISIONS.map((div) => (
+                          <SelectItem key={div} value={div}>
+                            {div}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      value={formData.tier}
+                      readOnly
+                      className={readOnlyClass}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Botón editar/guardar */}
-            <Button
-              type="button"
-              onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
-            >
-              {isEditing ? "Guardar cambios" : "Editar perfil"}
-            </Button>
+            <div className="flex justify-end pt-4">
+              <Button
+                type="button"
+                onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
+              >
+                {isEditing ? "Guardar cambios" : "Editar perfil"}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </TabsContent>
