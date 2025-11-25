@@ -13,58 +13,58 @@ const FOLDER = "v1762381404/";
 
 export const IMG_DEFAULT = {
   logo: {
-    src: `${CLOUDINARY_BASE_URL}${FOLDER}logo.png`,
+    src: `/logo.webp`,
     alt: "logo-lol-match",
   },
   number1: {
-    src: `${CLOUDINARY_BASE_URL}${FOLDER}number-1.png`,
+    src: `/images/icons/number-1.png`,
     alt: "number-1",
   },
   number2: {
-    src: `${CLOUDINARY_BASE_URL}${FOLDER}number-2.png`,
+    src: `/images/icons/number-2.png`,
     alt: "number-2",
   },
   number3: {
-    src: `${CLOUDINARY_BASE_URL}${FOLDER}number-3.png`,
+    src: `/images/icons/number-3.png`,
     alt: "number-3",
   },
   number4: {
-    src: `${CLOUDINARY_BASE_URL}${FOLDER}number-4.png`,
+    src: `/images/icons/number-4.png`,
     alt: "number-4",
   },
   avatar: {
-    src: `${CLOUDINARY_BASE_URL}${MODIFIER_300}${FOLDER}default-avatar.png`,
+    src: `/images/default-avatar.webp`,
     alt: "default-avatar",
   },
   profileIcon: {
-    src: `${CLOUDINARY_BASE_URL}${MODIFIER_300}${FOLDER}default-profile-icon.png`,
+    src: `/images/default-profile-icon.webp`,
     alt: "profile-icon",
   },
   avatarGuest: {
-    src: `${CLOUDINARY_BASE_URL}${MODIFIER_300}${FOLDER}guest-avatar.png`,
+    src: `/images/guest-avatar.webp`,
     alt: "guest-avatar",
   },
 };
 
 export const IMG_ROLES = {
   top: {
-    src: `${CLOUDINARY_BASE_URL}${FOLDER}role-top.png`,
+    src: `/images/icons/role-top.png`,
     alt: "top-role",
   },
   jungle: {
-    src: `${CLOUDINARY_BASE_URL}${FOLDER}role-jungle.png`,
+    src: `/images/icons/role-jungle.png`,
     alt: "jungle-role",
   },
   mid: {
-    src: `${CLOUDINARY_BASE_URL}${FOLDER}role-mid.png`,
+    src: `/images/icons/role-mid.png`,
     alt: "mid-role",
   },
   adc: {
-    src: `${CLOUDINARY_BASE_URL}${FOLDER}role-adc.png`,
+    src: `/images/icons/role-adc.png`,
     alt: "adc-role",
   },
   support: {
-    src: `${CLOUDINARY_BASE_URL}${FOLDER}role-support.png`,
+    src: `/images/icons/role-support.png`,
     alt: "support-role",
   },
 };
@@ -78,7 +78,7 @@ export const createAvatarMocks = (count) => {
     const key = `a${num}`; //clave para el avatar, formato a01, a02, ...
 
     avatars[key] = {
-      src: `${CLOUDINARY_BASE_URL}${MODIFIER_250}${FOLDER}avatar-mock-${num}.webp`,
+      src: `/images/avatars/avatar-mock-${num}.webp`,
       alt: `avatar-${num}`,
     };
   }
