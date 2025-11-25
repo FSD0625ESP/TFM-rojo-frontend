@@ -49,6 +49,7 @@ export function useSessionCheck(API_URL) {
         dispatch({ type: "CHECK_SESSION_FAILURE" });
       }
     };
+    
 
     checkSession();
   }, [API_URL, skipSessionCheck]);
@@ -57,4 +58,5 @@ export function useSessionCheck(API_URL) {
     ...state,
     dispatch, //expone el dispatch para login/logout
   };
+  
 }
