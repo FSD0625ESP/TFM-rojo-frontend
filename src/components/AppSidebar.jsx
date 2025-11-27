@@ -71,7 +71,11 @@ export function AppSidebar(props) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="xl" asChild>
-              <Link to="/" onClick={handleLinkClick} className="flex items-center gap-2">
+              <Link
+                to="/"
+                onClick={handleLinkClick}
+                className="flex items-center gap-2"
+              >
                 <img
                   src={IMG_DEFAULT.logo.src}
                   alt={IMG_DEFAULT.logo.alt}
