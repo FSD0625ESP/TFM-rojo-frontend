@@ -1,4 +1,3 @@
-// ProfileHeader.jsx
 import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
@@ -7,21 +6,38 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Camera, Calendar, Shield, Flame, Copy, Check } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { IMG_DEFAULT } from "../constants/images";
+import { toast } from "sonner";
 
+//componente para el header del perfil
 export function ProfileHeader() {
   const { user, updateUser } = useAuth();
 
   const [isCopied, setIsCopied] = useState(false);
 
+  //función para subir el avatar
   const handleAvatarUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    //validación en el frontend (mejor UX)
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+
+    if (file.size > maxSize) {
+      toast.error("File too large. Maximum size is 2MB");
+      return;
+    }
+
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Invalid file type. Only JPEG, PNG and WebP images are allowed");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("avatar", file);
 
+    //llamada al backend y subida del avatar
     try {
-      console.log("📡 [FRONTEND] Enviando imagen..."); // LOG 1
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/profile/upload-avatar`,
         {
@@ -30,27 +46,35 @@ export function ProfileHeader() {
           body: formData,
         }
       );
-      if (!res.ok) throw new Error("Error en la subida");
+
+      //si la respuesta no es exitosa, intentar parsear el error del backend
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        const errorMessage =
+          errorData.message || errorData.error || "Error uploading image";
+        throw new Error(errorMessage);
+      }
 
       const updatedUser = await res.json();
-      console.log("📥 [FRONTEND] Respuesta recibida:", updatedUser); // LOG 2
-      console.log("🖼️ [FRONTEND] Nuevo Avatar URL:", updatedUser.avatar); // LOG 3
       updateUser(updatedUser);
+      toast.success("Avatar updated successfully");
     } catch (err) {
       console.error("Error al subir avatar:", err);
+      //mostrar el mensaje de error al usuario
+      toast.error(err.message || "Error uploading image");
     }
   };
 
-  // 👇 FUNCIÓN PARA COPIAR "NOMBRE#TAG"
+  //función para copiar el Riot ID
   const handleCopyRiotId = () => {
     if (!user?.lolProfile?.gameName || !user?.lolProfile?.tagLine) return;
 
-    // Creamos el string completo sin espacios extra alrededor del #
+    //creamos el string completo sin espacios extra alrededor del #
     const fullId = `${user.lolProfile.gameName}#${user.lolProfile.tagLine}`;
 
     navigator.clipboard.writeText(fullId);
 
-    // Animación del icono
+    //animación del icono
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
@@ -96,7 +120,7 @@ export function ProfileHeader() {
               {user?.role !== "user" ? "Admin" : ""} Summoner
             </Badge>
 
-            {/* 👇 AQUÍ ESTÁ EL CAMBIO: Nombre + #Tag + Botón Copiar */}
+            {/* Nombre + #Tag + Botón Copiar */}
             <div className="flex items-center gap-2 text-muted-foreground">
               <p>
                 {user?.lolProfile?.gameName && user?.lolProfile?.tagLine
@@ -128,8 +152,8 @@ export function ProfileHeader() {
                 <Shield className="size-4" /> Tier:{" "}
                 {user?.lolProfile?.ranks
                   ? ["Master", "Grandmaster", "Challenger"].includes(
-                      user.lolProfile.ranks
-                    )
+                    user.lolProfile.ranks
+                  )
                     ? user.lolProfile.ranks // Si es Master+, solo muestra el Rango
                     : `${user.lolProfile.ranks} ${user?.lolProfile?.tier || ""}` // Si no, muestra Rango + División
                   : "Unranked"}
