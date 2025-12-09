@@ -5,6 +5,10 @@ import { MainRoutes } from "./routes/mainRoutes.jsx";
 
 function App() {
   const [splashLoader, setSplashLoader] = useState(() => {
+    //desactivar splash screen durante tests de Cypress
+    if (window.Cypress || import.meta.env.VITE_DISABLE_SPLASH === "true") {
+      return false;
+    }
     return sessionStorage.getItem("splashShown") !== "open";
   });
 

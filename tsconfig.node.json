@@ -1,10 +1,31 @@
 //es necesario para que typescript lo reconozca con toaster
+//configuración de TypeScript para archivos de configuración de Node.js (vite, cypress, etc.)
 {
   "compilerOptions": {
+    //habilita la compilación de proyectos de referencia (usado en proyectos compuestos)
     "composite": true,
+    
+    //usa módulos ES6/ESNext para importaciones/exportaciones modernas
     "module": "ESNext",
+    
+    //usa la resolución de módulos de Node.js (busca en node_modules, etc.)
     "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true
+    
+    //permite importar módulos CommonJS con sintaxis de default import
+    "allowSyntheticDefaultImports": true,
+    
+    //permite archivos JavaScript además de TypeScript (necesario para vite.config.js)
+    "allowJs": true,
+    
+    //salta la verificación de tipos en archivos .d.ts de node_modules (evita errores de librerías)
+    "skipLibCheck": true,
+    
+    //no genera archivos JavaScript de salida, solo verifica tipos
+    "noEmit": true,
+    
+    //incluye los tipos de Node.js globalmente (process, __dirname, etc.)
+    "types": ["node"]
   },
-  "include": ["vite.config.js"]
+  //archivos de configuración que TypeScript debe procesar
+  "include": ["vite.config.js", "cypress.config.js", "vitest.config.js"]
 }

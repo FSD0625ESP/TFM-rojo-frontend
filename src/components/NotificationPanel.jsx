@@ -7,10 +7,46 @@ import {
 import { Button } from "./ui/button";
 import { useNotifications } from "../context/NotificationContext";
 import { Bell, Check, X, Trash2 } from "lucide-react";
+
+//importación de dayjs con inicialización segura
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-dayjs.extend(relativeTime);
+//inicializar dayjs de forma segura
+try {
+    if (dayjs && typeof dayjs.extend === "function") {
+        dayjs.extend(relativeTime);
+    }
+} catch (error) {
+    console.warn("Error al inicializar dayjs plugin:", error);
+}
+
+//función helper segura para formatear fechas relativas
+const formatRelativeTime = (date) => {
+    try {
+        if (date && dayjs && typeof dayjs === "function") {
+            return dayjs(date).fromNow();
+        }
+    } catch (error) {
+        console.warn("Error al formatear fecha con dayjs:", error);
+    }
+
+    //fallback: formateo básico sin dayjs
+    try {
+        const now = new Date();
+        const then = new Date(date);
+        const diff = now - then;
+        const minutes = Math.floor(diff / 60000);
+        if (minutes < 1) return "just now";
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        const days = Math.floor(hours / 24);
+        return `${days}d ago`;
+    } catch {
+        return "recently";
+    }
+};
 
 export function NotificationPanel({ open, onOpenChange }) {
     const { notifications, unreadCount, acceptInvitation, rejectInvitation, deleteNotification } =
@@ -77,7 +113,7 @@ export function NotificationPanel({ open, onOpenChange }) {
                                             )}
                                             {notification.createdAt && (
                                                 <p className="text-xs text-muted-foreground mt-2">
-                                                    {dayjs(notification.createdAt).fromNow()}
+                                                    {formatRelativeTime(notification.createdAt)}
                                                 </p>
                                             )}
                                         </div>

@@ -11,4 +11,21 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: ["dayjs", "dayjs/plugin/relativeTime"],
+    esbuildOptions: {
+      target: "esnext",
+    },
+  },
+  build: {
+    commonjsOptions: {
+      include: [/dayjs/, /node_modules/],
+      transformMixedEsModules: true,
+    },
+  },
+  server: {
+    hmr: {
+      overlay: false, //desactivar overlay de errores para que no bloquee las capturas de Cypress
+    },
+  },
 });
