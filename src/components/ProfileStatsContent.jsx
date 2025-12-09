@@ -13,6 +13,7 @@ import {
   Target,
   History,
   RefreshCw,
+  AlertCircle,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -163,6 +164,34 @@ export function ProfileStatsContent() {
   if (loading)
     return <div className="p-10 text-center text-muted-foreground">Cargando historial...</div>;
 
+  // Mostrar card cuando no hay gameName/tagLine o cuando hay error de usuario no encontrado
+  const hasNoProfile = !user?.lolProfile?.gameName || !user?.lolProfile?.tagLine;
+  const isUserNotFoundError = error && (
+    error.includes("User not found") ||
+    error.includes("Check GameName") ||
+    error.includes("GameName and Region")
+  );
+
+  if (hasNoProfile || isUserNotFoundError) {
+    return (
+      <div className="space-y-6 animate-in fade-in duration-500">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <div className="space-y-2">
+              <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground" />
+              <h3 className="text-lg font-semibold text-muted-foreground">
+                Profile not configured
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Please configure your GameName and Region in your profile settings to view your statistics.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (error) return <div className="text-red-500 text-center p-4">{error}</div>;
 
   return (
@@ -181,8 +210,8 @@ export function ProfileStatsContent() {
           <CardContent className="flex flex-col items-center">
             <div className="relative">
               <img
-                src={stats?.summoner?.iconUrl}
-                className="h-24 w-24 rounded-full border-4 border-background shadow-md"
+                src={stats?.summoner?.iconUrl || "/images/default-profile-icon.webp"}
+                className="h-30 w-30 rounded-full border-4 border-background shadow-md p-2"
                 alt="Summoner Icon"
               />
               <Badge className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2">
