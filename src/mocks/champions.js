@@ -13,70 +13,49 @@ const PATCHES = PATCH_OPTIONS.map((p) => p.value);
 const REGIONS = REGION_OPTIONS.map((r) => r.value);
 const ROLES = ROLE_OPTIONS.filter((r) => r.value !== "ALL").map((r) => r.value); // excluye "ALL"
 
-const CHAMPION_ICONS = [
-  "Aatrox",
-  "Ahri",
-  "Akali",
-  "Alistar",
-  "Amumu",
-  "Anivia",
-  "Annie",
-  "Ashe",
-  "AurelionSol",
-  "Azir",
-  "Bard",
-  "Blitzcrank",
-  "Brand",
-  "Braum",
-  "Caitlyn",
-  "Camille",
-  "Cassiopeia",
-  "ChoGath",
-  "Corki",
-  "Darius",
-];
-
-const NAME_POOL = [
-  "Sylas",
-  "Morgana",
-  "Talon",
-  "Ezren",
-  "Kael",
-  "Nyra",
-  "Vex",
-  "Riven",
-  "Zara",
-  "Thorne",
-  "Liora",
-  "Draven",
-  "Kira",
-  "Jhin",
-  "Soraka",
-  "Vayne",
-  "Nocturne",
-  "Zed",
-  "Irelia",
-  "Xayah",
-  "Kayn",
-  "Senna",
-  "Ryze",
-  "Shen",
-  "Taliyah",
-  "Yone",
-  "Sett",
-  "Nami",
-  "Ornn",
-  "Vi",
-  "Renata",
-  "Garen",
-  "Sona",
-  "Jayce",
-  "Neeko",
-  "Katarina",
-  "Fiora",
-  "Gragas",
-  "Lillia",
-  "Pantheon",
+// Campeones de League of Legends con sus nombres e iconos correspondientes
+// Formato: { name: "Nombre del campeón", icon: "NombreIconoDataDragon" }
+const CHAMPIONS = [
+  { name: "Sylas", icon: "Sylas" },
+  { name: "Morgana", icon: "Morgana" },
+  { name: "Talon", icon: "Talon" },
+  { name: "Ezreal", icon: "Ezreal" },
+  { name: "Karthus", icon: "Karthus" },
+  { name: "Kassadin", icon: "Kassadin" },
+  { name: "Vex", icon: "Vex" },
+  { name: "Riven", icon: "Riven" },
+  { name: "Zeri", icon: "Zeri" },
+  { name: "Zoe", icon: "Zoe" },
+  { name: "Zac", icon: "Zac" },
+  { name: "Draven", icon: "Draven" },
+  { name: "Karma", icon: "Karma" },
+  { name: "Jhin", icon: "Jhin" },
+  { name: "Soraka", icon: "Soraka" },
+  { name: "Vayne", icon: "Vayne" },
+  { name: "Nocturne", icon: "Nocturne" },
+  { name: "Zed", icon: "Zed" },
+  { name: "Irelia", icon: "Irelia" },
+  { name: "Xayah", icon: "Xayah" },
+  { name: "Kayn", icon: "Kayn" },
+  { name: "Senna", icon: "Senna" },
+  { name: "Ryze", icon: "Ryze" },
+  { name: "Shen", icon: "Shen" },
+  { name: "Taliyah", icon: "Taliyah" },
+  { name: "Yone", icon: "Yone" },
+  { name: "Sett", icon: "Sett" },
+  { name: "Nami", icon: "Nami" },
+  { name: "Ornn", icon: "Ornn" },
+  { name: "Vi", icon: "Vi" },
+  { name: "RenataGlasc", icon: "RenataGlasc" },
+  { name: "Garen", icon: "Garen" },
+  { name: "Sona", icon: "Sona" },
+  { name: "Jayce", icon: "Jayce" },
+  { name: "Neeko", icon: "Neeko" },
+  { name: "Katarina", icon: "Katarina" },
+  { name: "Fiora", icon: "Fiora" },
+  { name: "Gragas", icon: "Gragas" },
+  { name: "Lillia", icon: "Lillia" },
+  { name: "Pantheon", icon: "Pantheon" },
 ];
 
 //función para generar IDs únicas
@@ -101,18 +80,18 @@ const TIER_ICONS = [
 
 //datos simulados de los 10 campeones para filtros por defecto
 const initialChampions = Array.from({ length: 10 }, (_, i) => {
-  const name = NAME_POOL[i % NAME_POOL.length];
-  const iconName = CHAMPION_ICONS[i % CHAMPION_ICONS.length];
+  const poolIndex = i % CHAMPIONS.length;
+  const champion = CHAMPIONS[poolIndex];
   const winRate = Math.floor(Math.random() * (76 - 10 + 1)) + 10; //entre 10 y 76
   const pickRate = Math.floor(Math.random() * (28 - 1 + 1)) + 1; //entre 1 y 28
   return {
     id: generateId(i),
-    name,
+    name: champion.name,
     tier: getRandomItem(TIER_ICONS),
     role: getRandomItem(ROLES),
     winRate,
     pickRate,
-    icon: `https://ddragon.leagueoflegends.com/cdn/15.21.1/img/champion/${iconName}.png`,
+    icon: `https://ddragon.leagueoflegends.com/cdn/15.21.1/img/champion/${champion.icon}.png`,
     patch: "15.21",
     region: "Global",
     rank: "EMERALD",
@@ -122,9 +101,8 @@ const initialChampions = Array.from({ length: 10 }, (_, i) => {
 
 //datos simulados adicionales para pruebas
 const randomChampions = Array.from({ length: 10000 }, (_, i) => {
-  const name = NAME_POOL[Math.floor(Math.random() * NAME_POOL.length)];
-  const iconName =
-    CHAMPION_ICONS[Math.floor(Math.random() * CHAMPION_ICONS.length)];
+  const poolIndex = Math.floor(Math.random() * CHAMPIONS.length);
+  const champion = CHAMPIONS[poolIndex];
   const role = ROLES[Math.floor(Math.random() * ROLES.length)];
   const tier = TIER_ICONS[Math.floor(Math.random() * TIER_ICONS.length)];
   const patch = PATCHES[Math.floor(Math.random() * PATCHES.length)];
@@ -136,12 +114,12 @@ const randomChampions = Array.from({ length: 10000 }, (_, i) => {
 
   return {
     id: generateId(i + 10),
-    name,
+    name: champion.name,
     tier,
     role,
     winRate,
     pickRate,
-    icon: `https://ddragon.leagueoflegends.com/cdn/15.21.1/img/champion/${iconName}.png`,
+    icon: `https://ddragon.leagueoflegends.com/cdn/15.21.1/img/champion/${champion.icon}.png`,
     patch,
     region,
     rank,

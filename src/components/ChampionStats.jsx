@@ -39,8 +39,8 @@ export function ChampionStats() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState("ALL");
   const [visibleCount, setVisibleCount] = useState(10); //mostrar 10 por defecto
-  const [sortColumn, setSortColumn] = useState(null); // "name", "tier", "role", "winRate", "pickRate"
-  const [sortDirection, setSortDirection] = useState("asc"); // "asc" o "desc"
+  const [sortColumn, setSortColumn] = useState("winRate"); // "name", "tier", "role", "winRate", "pickRate"
+  const [sortDirection, setSortDirection] = useState("desc"); // "asc" o "desc"
 
   //simular carga de datos
   useEffect(() => {

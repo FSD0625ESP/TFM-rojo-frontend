@@ -5,8 +5,6 @@ import { Loader2 } from "lucide-react";
 import { SummonerCard } from "./SummonerCard";
 import { AlertModal } from "./AlertModal";
 import { Card } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { IMG_DEFAULT } from "../constants/images";
 
 //formulario para buscar jugadores por Riot ID
 export function SummonerSearch() {
@@ -25,6 +23,15 @@ export function SummonerSearch() {
     setSearchParams({ gameName, tagLine });
     setShowError(false);
     setLoading(false);
+  };
+
+  const handleError = () => {
+    setShowError(true);
+    //limpiar los inputs para evitar que el diálogo se muestre en bucle
+    setGameName("");
+    setTagLine("");
+    //resetear searchParams para volver a la card por defecto inicial
+    setSearchParams(null);
   };
 
   return (
@@ -59,87 +66,14 @@ export function SummonerSearch() {
             />
           </div>
 
-          {/* Default Card (when no search) */}
-          {!searchParams && (
-            <Card className="w-full max-w-sm mx-auto mt-6 bg-neutral-900 rounded-xl border-4 border-gray-600 text-white p-0 h-[500px] opacity-60 grayscale">
-              {/* Grid principal: 50% superior y 50% inferior */}
-              <div className="grid grid-rows-2 h-full">
-                {/* 50% superior: Avatar y Username */}
-                <div className="flex flex-col items-center justify-center gap-3 p-6 border-b-2 border-white/20">
-                  <img
-                    src={IMG_DEFAULT.profileIcon.src}
-                    alt="Placeholder"
-                    draggable={false}
-                    className="w-40 h-40 rounded-full border-4 border-gray-400 object-cover select-none"
-                  />
-                  <div className="text-center">
-                    <h3 className="text-xl font-semibold text-gray-400">
-                      Summoner Name
-                    </h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Level --
-                    </p>
-                  </div>
-                </div>
+          {/* SummonerCard - gestiona todos los estados (default, loading, error, success) */}
+          <SummonerCard
+            gameName={searchParams?.gameName}
+            tagLine={searchParams?.tagLine}
+            onError={handleError}
+          />
 
-                {/* 50% inferior: 4 cuadrantes */}
-                <div className="grid grid-cols-2 grid-rows-2">
-                  {/* Cuadrante 1: Rank */}
-                  <div className="flex flex-col items-center justify-center p-4 border-r-2 border-b-2 border-white/20 bg-neutral-800/50">
-                    <span className="text-xs text-gray-500 mb-2 font-medium uppercase">
-                      Rank
-                    </span>
-                    <Badge variant="secondary" className="text-xl font-semibold bg-gray-600 text-gray-300">
-                      --
-                    </Badge>
-                  </div>
-
-                  {/* Cuadrante 2: Tier */}
-                  <div className="flex flex-col items-center justify-center p-4 border-b-2 border-white/20 bg-neutral-800/50">
-                    <span className="text-xs text-gray-500 mb-2 font-medium uppercase">
-                      Tier
-                    </span>
-                    <Badge variant="outline" className="text-xl font-semibold border-gray-500 text-gray-400">
-                      --
-                    </Badge>
-                  </div>
-
-                  {/* Cuadrante 3: Queue */}
-                  <div className="flex flex-col items-center justify-center p-4 border-r-2 border-white/20 bg-neutral-800/50">
-                    <span className="text-xs text-gray-500 mb-2 font-medium uppercase">
-                      Queue
-                    </span>
-                    <span className="text-sm font-semibold text-gray-400 text-center px-2">
-                      --
-                    </span>
-                  </div>
-
-                  {/* Cuadrante 4: Winrate */}
-                  <div className="flex flex-col items-center justify-center p-4 bg-neutral-800/50">
-                    <span className="text-xs text-gray-500 mb-2 font-medium uppercase">
-                      Winrate
-                    </span>
-                    <span className="text-xl font-semibold text-gray-400">
-                      --
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Result */}
-          {searchParams && (
-            <SummonerCard
-              {...searchParams}
-              onError={() => {
-                setSearchParams(null);
-                setShowError(true);
-              }}
-            />
-          )}
-
-          {/* Error Modal */}
+          {/* Error Modal - se muestra cuando no se encuentra el summoner */}
           <AlertModal
             open={showError}
             onClose={() => setShowError(false)}
