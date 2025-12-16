@@ -1,4 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL;
+import { clearAuthCookies } from "../utils/authInterceptor";
 
 //normaliza la url eliminando barras duplicadas al inicio o final
 export function normalizeUrl(endpoint) {
@@ -22,13 +23,24 @@ export async function parseError(res) {
 }
 
 //función base para hacer peticiones con manejo de errores
-export async function makeRequest(endpoint, method = "GET", body = null) {
+export async function makeRequest(endpoint, method = "GET", body = null, options = {}) {
   const res = await fetch(normalizeUrl(endpoint), {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...options.headers },
     credentials: "include",
     body: body ? JSON.stringify(body) : null,
   });
+
+  //manejar errores 401 antes de procesar la respuesta
+  //esto asegura que las cookies se limpien cuando la sesión expira
+  if (res.status === 401 && !options.skipAuthError) {
+    clearAuthCookies();
+
+    //si hay un callback personalizado, ejecutarlo
+    if (options.onUnauthorized) {
+      options.onUnauthorized();
+    }
+  }
 
   if (!res.ok) {
     const error = await parseError(res);

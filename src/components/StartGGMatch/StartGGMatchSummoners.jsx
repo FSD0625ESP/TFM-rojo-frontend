@@ -21,6 +21,7 @@ import { Card, CardContent } from "../ui/card";
 import { IMG_DEFAULT, IMG_ROLES } from "../../constants/images";
 import { ROLE_COLORS } from "../../constants/matches";
 import { useAuth } from "../../context/AuthContext";
+import { clearAuthCookies } from "../../utils/authInterceptor";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -70,6 +71,11 @@ export function StartGGMatchSummoners({ matches, setMatches, setActiveTab }) {
                     //mezclar los usuarios de manera aleatoria
                     const shuffledUsers = [...users].sort(() => Math.random() - 0.5);
                     setPlayers(shuffledUsers);
+                } else if (response.status === 401) {
+                    // Limpiar cookies y forzar re-autenticación cuando la sesión expira
+                    clearAuthCookies();
+                    console.error("Session expired, please login again");
+                    setPlayers([]);
                 } else {
                     console.error("Error fetching users for match");
                     setPlayers([]);

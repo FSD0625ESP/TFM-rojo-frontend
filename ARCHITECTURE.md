@@ -180,11 +180,25 @@ Los servicios encapsulan la comunicación con el backend:
 
 ```
 Services Layer
-├── apiService.js      (Cliente HTTP base)
+├── apiService.js      (Cliente HTTP base con interceptor de autenticación)
 ├── authService.js     (Autenticación)
 ├── chatService.js     (Chat)
 └── riotService.js     (Riot Games API)
 ```
+
+### Utilidades de Autenticación
+
+El sistema incluye utilidades para manejo centralizado de autenticación:
+
+```
+Utils Layer
+└── authInterceptor.js (Manejo de errores 401 y limpieza de cookies)
+```
+
+**Funcionalidades:**
+- Limpieza automática de cookies cuando se detecta error 401
+- Soporte para múltiples dominios (netlify.app y lolmatch.online)
+- Manejo centralizado de errores de autenticación
 
 ## 🔄 Flujo de Datos
 
@@ -358,7 +372,15 @@ Gestiona el estado de autenticación:
 - Login y logout
 - Actualización de datos de usuario
 - Gestión de cookies
+- Manejo automático de errores 401
+- Limpieza de cookies en múltiples dominios
 ```
+
+**Soporte Multi-Dominio:**
+- Detecta automáticamente cuando la sesión expira (401)
+- Limpia cookies del dominio actual y dominios anteriores
+- Permite transición transparente entre dominios (netlify.app ↔ lolmatch.online)
+- No requiere intervención del usuario al cambiar de dominio
 
 **Hooks relacionados:**
 
