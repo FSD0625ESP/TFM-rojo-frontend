@@ -120,6 +120,7 @@ TFM-rojo-frontend/
 │   │   └── images.js         # URLs de imágenes
 │   │
 │   ├── utils/                # Utilidades
+│   │   ├── authInterceptor.js # Interceptor de autenticación (manejo de 401)
 │   │   └── ...
 │   │
 │   ├── schemas/              # Esquemas de validación
@@ -396,6 +397,8 @@ const result = await makeRequest("/users", "POST", { name: "John" });
 - Manejo automático de errores
 - Soporte para cookies (credentials: 'include')
 - Parsing de errores de validación
+- Manejo automático de errores 401 (limpieza de cookies)
+- Soporte multi-dominio (lol-match.netlify.app y lolmatch.online)
 
 ### authService
 
@@ -517,9 +520,23 @@ const { theme, setTheme } = useTheme();
 
 Al cargar la aplicación, `useSessionCheck` verifica automáticamente si hay una sesión activa:
 
-- Hace petición a `/api/auth/check-session`
+- Hace petición a `/api/auth/check`
 - Si hay sesión válida, carga los datos del usuario
-- Si no hay sesión, mantiene el estado de no autenticado
+- Si no hay sesión o recibe 401, limpia cookies y mantiene el estado de no autenticado
+
+### Soporte Multi-Dominio
+
+La aplicación soporta múltiples dominios (lol-match.netlify.app y lolmatch.online):
+
+- **Interceptor de Autenticación**: `authInterceptor.js` maneja automáticamente errores 401
+- **Limpieza Automática**: Cuando se detecta un 401, se limpian todas las cookies de autenticación
+- **Transición Transparente**: Los usuarios pueden cambiar entre dominios sin problemas
+- **Manejo Centralizado**: Todos los servicios API usan el interceptor para manejar errores de autenticación
+
+**Componentes clave:**
+- `utils/authInterceptor.js`: Funciones para limpiar cookies y manejar errores 401
+- `services/apiService.js`: Manejo automático de 401 en todas las peticiones
+- `hooks/useSessionCheck.js`: Verificación de sesión con limpieza automática en caso de 401
 
 ### Protección de Rutas
 
@@ -603,6 +620,8 @@ const isMobile = useIsMobile();
 - Verificar que las cookies se estén enviando (credentials: 'include')
 - Revisar la configuración de CORS en el backend
 - Verificar que el token JWT sea válido
+- Si cambias de dominio (netlify.app a lolmatch.online), las cookies se limpian automáticamente
+- Los errores 401 se manejan automáticamente limpiando cookies y forzando re-autenticación
 
 ### Errores en tests de Cypress
 
